@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verde Lab — Project Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F5F6F8;
+    --sidebar: #FFFFFF;
+    --card: #FFFFFF;
+    --line: #E7E8EC;
+    --ink: #1B1D23;
+    --ink-dim: #6B6F7A;
+    --ink-faint: #9AA0AC;
+    --accent: #5B5BD6;
+    --accent-light: #EEEEFB;
+    --accent-dark: #3F3FB0;
+    --green: #1F9D6B;
+    --green-bg: #E5F7EF;
+    --amber: #B6790A;
+    --amber-bg: #FDF2DF;
+    --red: #C4432E;
+    --red-bg: #FBEAE6;
+    --gray-bg: #F0F1F3;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter', sans-serif;display:flex;min-height:100vh;}
+  .sidebar{width:250px;background:var(--sidebar);border-right:1px solid var(--line);padding:24px 14px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  .brand{font-family:'Manrope', sans-serif;font-weight:800;font-size:16px;letter-spacing:-0.01em;padding:0 8px 4px;}
+  .brand-sub{font-size:11.5px;color:var(--ink-faint);padding:0 8px 20px;}
+  .nav-group-label{font-size:10.5px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.05em;padding:14px 10px 4px;}
+  .nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--ink-dim);cursor:pointer;margin-bottom:1px;}
+  .nav-item:hover{background:var(--gray-bg);}
+  .nav-item.active{background:var(--accent-light);color:var(--accent-dark);font-weight:600;}
+  .nav-dot{width:6px;height:6px;border-radius:50%;background:var(--ink-faint);flex-shrink:0;}
+  .nav-item.active .nav-dot{background:var(--accent);}
+  .nav-pct{margin-left:auto;font-size:10.5px;color:var(--ink-faint);}
+  .nav-item.active .nav-pct{color:var(--accent-dark);}
+  .main{flex:1;padding:32px 40px 60px;max-width:960px;}
+  .page-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;}
+  .page-head h1{font-family:'Manrope', sans-serif;font-weight:700;font-size:23px;margin:0 0 4px;}
+  .page-head .sub{font-size:13px;color:var(--ink-dim);}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+  .kpi-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+  .kpi-label{font-size:12px;color:var(--ink-dim);margin-bottom:6px;}
+  .kpi-value{font-family:'Manrope', sans-serif;font-weight:700;font-size:26px;}
+  .kpi-value.accent{color:var(--accent-dark);}
+  .kpi-value.red{color:var(--red);}
+
+  .section-label{font-size:12.5px;font-weight:600;color:var(--ink-dim);text-transform:uppercase;letter-spacing:0.04em;margin:28px 0 12px;}
+  .topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .topic-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;cursor:pointer;transition:border-color 0.15s ease;}
+  .topic-card:hover{border-color:var(--accent);}
+  .topic-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;}
+  .topic-card-top h3{font-size:13.5px;font-weight:600;margin:0;}
+  .topic-card-top .count{font-size:11.5px;color:var(--ink-faint);white-space:nowrap;}
+  .bar-track{height:6px;background:var(--gray-bg);border-radius:3px;overflow:hidden;margin-bottom:8px;}
+  .bar-fill{height:100%;background:var(--accent);border-radius:3px;}
+  .topic-card-foot{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-faint);}
+  .flag-row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:13px;}
+  .flag-row .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+  .flag-row .dot.high{background:var(--red);}
+  .flag-row .dot.blocked{background:var(--amber);}
+  .flag-row .topic-tag{margin-left:auto;font-size:11px;color:var(--ink-faint);background:var(--gray-bg);padding:2px 8px;border-radius:8px;white-space:nowrap;}
+
+  .task-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;}
+  .task-check{width:18px;height:18px;border-radius:6px;border:1.5px solid #C7C9D1;background:#fff;cursor:pointer;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;padding:0;}
+  .task-check.done{background:var(--green);border-color:var(--green);}
+  .task-check.done::after{content:'\2713';color:#fff;font-size:11px;}
+  .task-body{flex:1;min-width:0;}
+  .task-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .task-text{font-size:14px;cursor:pointer;}
+  .task-text.done{color:var(--ink-faint);text-decoration:line-through;}
+  .pill{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:8px;letter-spacing:0.02em;}
+  .pill.high{background:var(--red-bg);color:var(--red);}
+  .pill.medium{background:var(--amber-bg);color:var(--amber);}
+  .pill.low{background:var(--gray-bg);color:var(--ink-dim);}
+  select.status-select{font-size:11px;font-weight:600;border:none;border-radius:8px;padding:3px 8px;font-family:'Inter',sans-serif;cursor:pointer;}
+  .status-select.not_started{background:var(--gray-bg);color:var(--ink-dim);}
+  .status-select.in_progress{background:var(--amber-bg);color:var(--amber);}
+  .status-select.done{background:var(--green-bg);color:var(--green);}
+  .status-select.blocked{background:var(--red-bg);color:var(--red);}
+  .icon-btn{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:13px;padding:2px 4px;opacity:0.6;}
+  .icon-btn:hover{opacity:1;color:var(--accent);}
+  .task-del{background:none;border:1px solid var(--line);color:var(--ink-faint);cursor:pointer;font-size:12px;padding:4px 9px;border-radius:8px;opacity:0.7;white-space:nowrap;}
+  .task-del:hover{opacity:1;color:var(--red);border-color:var(--red-bg);background:var(--red-bg);}
+  .task-comment{font-size:12.5px;color:var(--ink-dim);margin-top:6px;}
+  .comment-input{width:100%;border:1px solid var(--line);border-radius:6px;font-size:12.5px;font-family:'Inter',sans-serif;padding:6px 8px;margin-top:6px;min-height:32px;}
+  .attach-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center;}
+  .thumb-wrap{position:relative;width:36px;height:36px;flex-shrink:0;}
+  .thumb{width:36px;height:36px;border-radius:6px;object-fit:cover;cursor:pointer;border:1px solid var(--line);display:block;}
+  .attach-x{position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:var(--ink);color:#fff;border:none;font-size:10px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;opacity:0.85;}
+  .attach-x:hover{background:var(--red);opacity:1;}
+  .drive-chip-wrap{position:relative;display:inline-flex;align-items:center;}
+  .drive-chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;background:var(--accent-light);color:var(--accent-dark);padding:3px 20px 3px 9px;border-radius:8px;text-decoration:none;}
+  .drive-chip:hover{background:#E1E1FA;}
+  .chip-x{position:absolute;right:4px;top:50%;transform:translateY(-50%);cursor:pointer;opacity:0.5;font-size:12px;color:var(--accent-dark);background:none;border:none;padding:0 2px;line-height:1;}
+  .chip-x:hover{opacity:1;color:var(--red);}
+  .due-badge{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:8px;cursor:pointer;background:var(--gray-bg);color:var(--ink-dim);white-space:nowrap;}
+  .due-badge.today{background:var(--amber-bg);color:var(--amber);}
+  .due-badge.overdue{background:var(--red-bg);color:var(--red);}
+  .due-badge.reminder::before{content:'\1F514\00A0';}
+  .due-panel{display:flex;align-items:center;gap:10px;margin-top:8px;padding:10px 12px;background:var(--gray-bg);border-radius:8px;font-size:12.5px;flex-wrap:wrap;}
+  .due-panel input[type=date]{border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-family:'Inter',sans-serif;font-size:12.5px;}
+  .due-panel label{display:flex;align-items:center;gap:5px;color:var(--ink-dim);}
+  .due-panel .due-remove{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:12px;text-decoration:underline;}
+  .due-panel .due-remove:hover{color:var(--red);}
+  .add-row{display:flex;gap:8px;margin-top:12px;}
+  .add-row input[type=text]{flex:1;border:1px solid var(--line);border-radius:8px;font-size:13px;padding:8px 10px;font-family:'Inter',sans-serif;}
+  .add-row select{border:1px solid var(--line);border-radius:8px;font-size:12px;padding:8px;font-family:'Inter',sans-serif;color:var(--ink-dim);}
+  .add-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;}
+  .add-btn:hover{background:var(--accent-dark);}
+  .empty-note{font-size:13px;color:var(--ink-faint);padding:20px 0;}
+
+  .formula-panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:22px;}
+  .formula-panel h3{font-family:'Manrope',sans-serif;font-size:15px;margin:0 0 2px;}
+  .formula-version{font-size:12px;color:var(--ink-faint);margin-bottom:14px;}
+  table.formula-table{width:100%;border-collapse:collapse;font-size:13px;}
+  table.formula-table th{text-align:left;font-size:11px;color:var(--ink-faint);font-weight:600;text-transform:uppercase;letter-spacing:0.03em;padding:0 8px 8px 0;border-bottom:1px solid var(--line);}
+  table.formula-table td{padding:8px 8px 8px 0;border-bottom:1px solid var(--line);vertical-align:top;}
+  table.formula-table input{width:100%;border:none;background:transparent;font-size:13px;font-family:'Inter',sans-serif;padding:2px 0;}
+  table.formula-table input:focus{outline:none;border-bottom:1px solid var(--accent);}
+  .formula-del{background:none;border:none;color:var(--ink-faint);cursor:pointer;opacity:0.5;font-size:14px;}
+  .formula-del:hover{opacity:1;color:var(--red);}
+  .formula-add-btn{margin-top:10px;background:var(--gray-bg);border:none;border-radius:8px;padding:6px 14px;font-size:12.5px;color:var(--ink-dim);cursor:pointer;}
+  .formula-add-btn:hover{background:var(--accent-light);color:var(--accent-dark);}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(20,20,25,0.65);display:flex;align-items:center;justify-content:center;z-index:100;}
+  .modal-overlay img{max-width:90vw;max-height:85vh;border-radius:8px;}
+  .footer-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:20px;}
+  .footer-actions button{background:none;border:1px solid var(--line);color:var(--ink-dim);font-size:11.5px;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;}
+  .footer-actions button:hover{color:var(--accent-dark);border-color:var(--accent);}
+  #import-file{display:none;}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="brand">Verde Lab</div>
+  <div class="brand-sub">Project tracker</div>
+  <div id="nav"></div>
+</div>
+
+<div class="main">
+  <div id="overview" class="view active">
+    <div class="page-head">
+      <div><h1>Overview</h1><div class="sub">Nexo Austral Europa — all workstreams at a glance</div></div>
+    </div>
+    <div class="kpi-row" id="kpi-row"></div>
+    <div class="section-label">Needs attention</div>
+    <div id="flag-list"></div>
+    <div class="section-label">Workstreams</div>
+    <div class="topic-grid" id="topic-grid"></div>
+    <div class="footer-actions">
+      <button id="export-btn">Export backup (.json)</button>
+      <button id="import-btn">Import backup</button>
+      <button id="export-ics-btn">Export reminders (.ics)</button>
+      <input type="file" id="import-file" accept="application/json">
+    </div>
+  </div>
+  <div id="topic-views"></div>
+</div>
+
+<div id="modal-root"></div>
+
+<script>
+const TOPICS = [
+  {key:"legal", label:"Legal & Corporate", group:"Foundations"},
+  {key:"ip", label:"Intellectual Property", group:"Foundations"},
+  {key:"reg-spain", label:"Regulatory — Spain", group:"Foundations"},
+  {key:"reg-eu", label:"Regulatory — EU", group:"Foundations"},
+  {key:"reg-de", label:"Regulatory — Germany (later)", group:"Foundations"},
+
+  {key:"formula", label:"Master Formula", group:"Product"},
+  {key:"rnd", label:"Product R&D & Testing", group:"Product"},
+  {key:"supply", label:"Supply Chain & Manufacturing", group:"Product"},
+  {key:"packaging", label:"Packaging", group:"Product"},
+  {key:"customs", label:"Import / Export & Customs", group:"Product"},
+
+  {key:"brand", label:"Brand & Identity", group:"Go-to-market"},
+  {key:"marketing", label:"Marketing & Go-to-Market", group:"Go-to-market"},
+  {key:"sales", label:"Sales Channels & Distribution", group:"Go-to-market"},
+  {key:"pricing", label:"Pricing & Unit Economics", group:"Go-to-market"},
+
+  {key:"finance", label:"Finance & Accounting", group:"Operations"},
+  {key:"banking", label:"Banking & Payments", group:"Operations"},
+  {key:"ecom", label:"E-commerce & Tech Stack", group:"Operations"},
+  {key:"privacy", label:"Data Privacy / GDPR", group:"Operations"},
+  {key:"support", label:"Customer Support & Ops", group:"Operations"},
+  {key:"risk", label:"Risk & Contingency", group:"Operations"}
+];
+
+const SEED_TASKS = [
+  {id:1,topic:"legal",text:"Confirm no partner/investor agreement needed while solo",status:"done",priority:"low",comment:"Nexo Austral Europa S.L.U. active, sole founder"},
+  {id:20,topic:"legal",text:"Review product liability insurance options",status:"not_started",priority:"medium",comment:"Relevant once selling an ingestible product"},
+  {id:21,topic:"legal",text:"Confirm gestoria scope vs food regulatory consultant split",status:"done",priority:"low",comment:"Gestoria = accounting/tax/admin. Novel Food/EFSA needs a specialist"},
+  {id:2,topic:"ip",text:"Register VIRT trademark - Spain (OEPM)",status:"not_started",priority:"high",comment:""},
+  {id:3,topic:"ip",text:"Register VIRT trademark - EU (EUIPO)",status:"not_started",priority:"high",comment:""},
+  {id:4,topic:"ip",text:"EUIPO eSearch for FLOU, classes 30 and 32",status:"not_started",priority:"high",comment:"Before domain purchase"},
+  {id:5,topic:"ip",text:"Purchase domain",status:"not_started",priority:"medium",comment:"Only after trademark clearance"},
+  {id:6,topic:"reg-spain",text:"RGSEAA comunicacion previa filing",status:"not_started",priority:"medium",comment:"File once formula and label ready. RD 191/2011 Art 6-7"},
+  {id:7,topic:"reg-spain",text:"Draft Spanish-language label legal text",status:"not_started",priority:"medium",comment:""},
+  {id:8,topic:"reg-eu",text:"Resolve Guayusa Novel Food ambiguity",status:"blocked",priority:"high",comment:"Blocking production spend, Reg (EU) 2015/2283"},
+  {id:9,topic:"reg-eu",text:"Confirm EFSA structure/function claims for all actives",status:"not_started",priority:"medium",comment:""},
+  {id:10,topic:"formula",text:"Finalize KLM extract vs Vehgro leaf ratio",status:"in_progress",priority:"high",comment:"v0.6 replaces 1830mg leaf with 230mg 5:1 extract"},
+  {id:11,topic:"formula",text:"Confirm lucuma dose as bitterness buffer",status:"not_started",priority:"medium",comment:""},
+  {id:12,topic:"rnd",text:"Build structured tasting protocol",status:"in_progress",priority:"high",comment:""},
+  {id:13,topic:"rnd",text:"Physical blend tasting - Formula v0.6",status:"not_started",priority:"high",comment:"Samples in hand, not tested yet"},
+  {id:14,topic:"supply",text:"Qualify Global Pharma CM - dry blend + jar fill",status:"not_started",priority:"high",comment:"Contact: Monika Bryczkiewicz - make or break"},
+  {id:15,topic:"packaging",text:"Confirm Miron Saturn jar samples + screen-print pricing MOQ 100",status:"in_progress",priority:"medium",comment:"Contact: Max Veld"},
+  {id:16,topic:"customs",text:"Confirm indirect customs representative route for future shipments",status:"done",priority:"medium",comment:"FedEx Express Spain SLU precedent set on AWB 872846263895"},
+  {id:17,topic:"brand",text:"Finalize brand visual direction",status:"not_started",priority:"low",comment:"Editorial Object / Dark Functional Luxury"},
+  {id:22,topic:"brand",text:"Logo suite - primary, secondary mark, favicon",status:"not_started",priority:"high",comment:""},
+  {id:23,topic:"brand",text:"Color palette and typography system documented",status:"not_started",priority:"medium",comment:"Amotrio serif + Axioma grotesque per deck"},
+  {id:24,topic:"brand",text:"Brand guidelines one-pager (logo use, colors, type, tone)",status:"not_started",priority:"medium",comment:""},
+  {id:25,topic:"brand",text:"Packaging artwork - print-ready files",status:"not_started",priority:"high",comment:"Depends on Miron jar spec finalization"},
+  {id:26,topic:"brand",text:"Product photography - studio (white bg, ecommerce)",status:"not_started",priority:"high",comment:""},
+  {id:27,topic:"brand",text:"Product photography - lifestyle / editorial",status:"not_started",priority:"medium",comment:""},
+  {id:28,topic:"brand",text:"Social media templates - Instagram grid + Stories",status:"not_started",priority:"medium",comment:"Digital-first comms priority"},
+  {id:29,topic:"brand",text:"Website / landing page UI kit",status:"not_started",priority:"high",comment:""},
+  {id:30,topic:"brand",text:"Tone of voice guide",status:"not_started",priority:"low",comment:""},
+  {id:31,topic:"brand",text:"Email templates - welcome, order confirmation, newsletter",status:"not_started",priority:"low",comment:""},
+  {id:32,topic:"brand",text:"Short-form video assets - product demo, brand intro reel",status:"not_started",priority:"medium",comment:"For Reels/TikTok, digital-first priority"},
+  {id:33,topic:"brand",text:"Press kit / media one-sheet",status:"not_started",priority:"low",comment:""},
+  {id:34,topic:"brand",text:"Influencer/UGC seeding kit (sample mailer insert, one-pager)",status:"not_started",priority:"medium",comment:""},
+
+  {id:18,topic:"marketing",text:"Define Spain early-adopter customer profile",status:"not_started",priority:"high",comment:"Berlin biohacker persona does not map to Spain market"},
+  {id:19,topic:"banking",text:"Open Wise Business account",status:"not_started",priority:"medium",comment:"Second account for international supplier payments"},
+
+  {id:35,topic:"pricing",text:"Build full COGS breakdown per unit",status:"not_started",priority:"high",comment:"Ingredients + packaging + co-manufacturing fee"},
+  {id:36,topic:"pricing",text:"Confirm freight and logistics cost per unit",status:"not_started",priority:"medium",comment:""},
+  {id:37,topic:"pricing",text:"Confirm customs duty and IVA treatment on landed cost",status:"not_started",priority:"medium",comment:""},
+  {id:38,topic:"pricing",text:"Set wholesale vs D2C margin structure",status:"not_started",priority:"high",comment:""},
+  {id:39,topic:"pricing",text:"Account for payment processing fees (Stripe/Shopify/Amazon referral)",status:"not_started",priority:"low",comment:""},
+  {id:40,topic:"pricing",text:"Model breakeven unit volume at target price",status:"not_started",priority:"high",comment:""},
+  {id:41,topic:"pricing",text:"Benchmark price positioning vs competitor set",status:"not_started",priority:"medium",comment:""},
+  {id:42,topic:"pricing",text:"Decide subscription vs one-time purchase economics",status:"not_started",priority:"low",comment:""},
+  {id:43,topic:"pricing",text:"Build in returns/damage rate buffer",status:"not_started",priority:"low",comment:""},
+  {id:44,topic:"pricing",text:"Account for ARS/EUR currency exposure on supplier payments",status:"not_started",priority:"medium",comment:"KLM Argentina payments"}
+];
+
+const SEED_FORMULA = [
+  {id:1,name:"KLM yerba mate extract 5:1 (instant, soluble)",dose:"230 mg",pct:"7.7%",source:"KLM Argentina",notes:"Replaces 1830mg Vehgro leaf powder"},
+  {id:2,name:"Lion's Mane extract",dose:"600 mg",pct:"20%",source:"Vehgro",notes:""},
+  {id:3,name:"Lucuma powder",dose:"610 mg",pct:"20.3%",source:"Vehgro",notes:"Bitterness buffer"},
+  {id:4,name:"Ginger extract",dose:"480 mg",pct:"16%",source:"Vehgro",notes:""}
+];
+
+let tasks = [];
+let formulaRows = [];
+let nextTaskId = 100;
+let nextFormulaId = 100;
+
+async function loadStorage(){
+  try{
+    if(window.storage){
+      const res = await window.storage.get('virt-full-tracker');
+      if(res && res.value) return JSON.parse(res.value);
+    }
+  }catch(e){}
+  try{
+    const local = localStorage.getItem('virt-full-tracker');
+    if(local) return JSON.parse(local);
+  }catch(e){}
+  return null;
+}
+
+async function saveStorage(){
+  const payload = JSON.stringify({tasks, formulaRows});
+  try{
+    if(window.storage){ await window.storage.set('virt-full-tracker', payload); return; }
+  }catch(e){}
+  try{ localStorage.setItem('virt-full-tracker', payload); }catch(e){}
+}
+
+function topicStats(key){
+  const t = tasks.filter(x=>x.topic===key);
+  const done = t.filter(x=>x.status==='done').length;
+  return {total:t.length, done, pct: t.length? Math.round(done/t.length*100):0};
+}
+
+function renderNav(activeKey){
+  const nav = document.getElementById('nav');
+  nav.innerHTML = '';
+  const overviewItem = document.createElement('div');
+  overviewItem.className = 'nav-item' + (activeKey==='overview'?' active':'');
+  overviewItem.innerHTML = `<span class="nav-dot"></span>Overview`;
+  overviewItem.addEventListener('click', ()=>switchView('overview'));
+  nav.appendChild(overviewItem);
+
+  let lastGroup = null;
+  TOPICS.forEach(topic=>{
+    if(topic.group !== lastGroup){
+      const gl = document.createElement('div');
+      gl.className = 'nav-group-label';
+      gl.textContent = topic.group;
+      nav.appendChild(gl);
+      lastGroup = topic.group;
+    }
+    const stats = topicStats(topic.key);
+    const item = document.createElement('div');
+    item.className = 'nav-item' + (activeKey===topic.key?' active':'');
+    item.innerHTML = `<span class="nav-dot"></span>${topic.label}<span class="nav-pct">${stats.pct}%</span>`;
+    item.addEventListener('click', ()=>switchView(topic.key));
+    nav.appendChild(item);
+  });
+}
+
+function switchView(key){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  if(key==='overview'){ document.getElementById('overview').classList.add('active'); }
+  else { document.getElementById('view-'+key).classList.add('active'); }
+  renderNav(key);
+}
+
+function renderOverview(){
+  const allDone = tasks.filter(t=>t.status==='done').length;
+  const allTotal = tasks.length;
+  const blocked = tasks.filter(t=>t.status==='blocked').length;
+  const highOpen = tasks.filter(t=>t.priority==='high' && t.status!=='done').length;
+
+  document.getElementById('kpi-row').innerHTML = `
+    <div class="kpi-card"><div class="kpi-label">Overall complete</div><div class="kpi-value accent">${allTotal? Math.round(allDone/allTotal*100):0}%</div></div>
+    <div class="kpi-card"><div class="kpi-label">Open tasks</div><div class="kpi-value">${allTotal-allDone}</div></div>
+    <div class="kpi-card"><div class="kpi-label">High priority open</div><div class="kpi-value">${highOpen}</div></div>
+    <div class="kpi-card"><div class="kpi-label">Blocked</div><div class="kpi-value red">${blocked}</div></div>
+  `;
+
+  const flagList = document.getElementById('flag-list');
+  const flags = tasks.filter(t=>t.status==='blocked' || (t.priority==='high' && t.status!=='done'));
+  flagList.innerHTML = flags.length ? '' : '<div class="empty-note">Nothing flagged.</div>';
+  flags.forEach(t=>{
+    const topicLabel = TOPICS.find(x=>x.key===t.topic).label;
+    const row = document.createElement('div');
+    row.className = 'flag-row';
+    row.innerHTML = `<span class="dot ${t.status==='blocked'?'blocked':'high'}"></span>${t.text}<span class="topic-tag">${topicLabel}</span>`;
+    flagList.appendChild(row);
+  });
+
+  const topicGrid = document.getElementById('topic-grid');
+  topicGrid.innerHTML = '';
+  TOPICS.forEach(topic=>{
+    const stats = topicStats(topic.key);
+    const card = document.createElement('div');
+    card.className = 'topic-card';
+    card.innerHTML = `
+      <div class="topic-card-top"><h3>${topic.label}</h3><span class="count">${stats.done}/${stats.total}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${stats.pct}%"></div></div>
+      <div class="topic-card-foot"><span>${stats.pct}% complete</span><span>View &rarr;</span></div>
+    `;
+    card.addEventListener('click', ()=>switchView(topic.key));
+    topicGrid.appendChild(card);
+  });
+}
+
+function fileToResizedDataUrl(file, maxDim, cb){
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      let w = img.width, h = img.height;
+      if(w > h && w > maxDim){ h = Math.round(h * maxDim/w); w = maxDim; }
+      else if(h > maxDim){ w = Math.round(w * maxDim/h); h = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      cb(canvas.toDataURL('image/jpeg', 0.75));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function openImageModal(src){
+  const root = document.getElementById('modal-root');
+  root.innerHTML = '';
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.addEventListener('click', ()=>{ root.innerHTML=''; });
+  const img = document.createElement('img');
+  img.src = src;
+  overlay.appendChild(img);
+  root.appendChild(overlay);
+}
+
+function renderTopicViews(){
+  const container = document.getElementById('topic-views');
+  container.innerHTML = '';
+  TOPICS.forEach(topic=>{
+    const view = document.createElement('div');
+    view.className = 'view';
+    view.id = 'view-'+topic.key;
+    const stats = topicStats(topic.key);
+    let extraHtml = '';
+    if(topic.key === 'formula') extraHtml = `<div id="formula-panel-slot"></div>`;
+    view.innerHTML = `
+      <div class="page-head">
+        <div><h1>${topic.label}</h1><div class="sub">${stats.total ? stats.done+' of '+stats.total+' tasks complete' : 'No tasks yet'}</div></div>
+      </div>
+      ${extraHtml}
+      <div id="tasklist-${topic.key}"></div>
+    `;
+    container.appendChild(view);
+    if(topic.key === 'formula') renderFormulaPanel();
+  });
+  TOPICS.forEach(topic=>renderTaskList(topic.key));
+}
+
+function renderFormulaPanel(){
+  const slot = document.getElementById('formula-panel-slot');
+  if(!slot) return;
+  const panel = document.createElement('div');
+  panel.className = 'formula-panel';
+  panel.innerHTML = `
+    <h3>Ingredient table</h3>
+    <div class="formula-version">Formula version v0.6 &middot; 3g serving, 30 servings per 90g jar</div>
+  `;
+  const table = document.createElement('table');
+  table.className = 'formula-table';
+  table.innerHTML = `<thead><tr><th>Ingredient</th><th>Dose</th><th>% of serving</th><th>Source</th><th>Notes</th><th></th></tr></thead>`;
+  const tbody = document.createElement('tbody');
+  formulaRows.forEach(row=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input value="${row.name.replace(/"/g,'&quot;')}" data-f="name"></td>
+      <td><input value="${row.dose.replace(/"/g,'&quot;')}" data-f="dose" style="width:70px"></td>
+      <td><input value="${row.pct.replace(/"/g,'&quot;')}" data-f="pct" style="width:60px"></td>
+      <td><input value="${row.source.replace(/"/g,'&quot;')}" data-f="source" style="width:90px"></td>
+      <td><input value="${row.notes.replace(/"/g,'&quot;')}" data-f="notes"></td>
+      <td><button class="formula-del">&times;</button></td>
+    `;
+    tr.querySelectorAll('input').forEach(inp=>{
+      inp.addEventListener('blur', (e)=>{
+        row[e.target.getAttribute('data-f')] = e.target.value;
+        saveStorage();
+      });
+    });
+    tr.querySelector('.formula-del').addEventListener('click', ()=>{
+      formulaRows = formulaRows.filter(r=>r.id!==row.id);
+      saveStorage();
+      renderTopicViews();
+      switchView('formula');
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  panel.appendChild(table);
+  const addBtn = document.createElement('button');
+  addBtn.className = 'formula-add-btn';
+  addBtn.textContent = '+ Add ingredient';
+  addBtn.addEventListener('click', ()=>{
+    formulaRows.push({id:nextFormulaId++, name:'', dose:'', pct:'', source:'', notes:''});
+    saveStorage();
+    renderTopicViews();
+    switchView('formula');
+  });
+  panel.appendChild(addBtn);
+  slot.appendChild(panel);
+}
+
+function renderTaskList(topicKey){
+  const el = document.getElementById('tasklist-'+topicKey);
+  el.innerHTML = '';
+  const topicTasks = tasks.filter(t=>t.topic===topicKey);
+
+  if(topicTasks.length === 0){
+    const note = document.createElement('div');
+    note.className = 'empty-note';
+    note.textContent = 'No tasks yet — add the first one below.';
+    el.appendChild(note);
+  }
+
+  topicTasks.forEach(task=>{
+    const card = document.createElement('div');
+    card.className = 'task-card';
+
+    const check = document.createElement('button');
+    check.className = 'task-check' + (task.status==='done'?' done':'');
+    check.addEventListener('click', ()=>{
+      task.status = task.status==='done' ? 'not_started' : 'done';
+      saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
+    });
+
+    const body = document.createElement('div');
+    body.className = 'task-body';
+
+    const top = document.createElement('div');
+    top.className = 'task-top';
+
+    const text = document.createElement('span');
+    text.className = 'task-text' + (task.status==='done'?' done':'');
+    text.textContent = task.text;
+    text.addEventListener('click', ()=>{ task._expanded = !task._expanded; renderTaskList(topicKey); });
+
+    const pill = document.createElement('span');
+    pill.className = 'pill ' + task.priority;
+    pill.textContent = task.priority;
+
+    const statusSel = document.createElement('select');
+    statusSel.className = 'status-select ' + task.status;
+    [['not_started','Not started'],['in_progress','In progress'],['done','Done'],['blocked','Blocked']].forEach(([v,l])=>{
+      const opt = document.createElement('option');
+      opt.value=v; opt.textContent=l;
+      if(task.status===v) opt.selected=true;
+      statusSel.appendChild(opt);
+    });
+    statusSel.addEventListener('change', (e)=>{
+      task.status = e.target.value;
+      saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
+    });
+
+    const imgBtn = document.createElement('button');
+    imgBtn.className = 'icon-btn';
+    imgBtn.title = 'Attach image';
+    imgBtn.textContent = '\uD83D\uDDBC';
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.style.display = 'none';
+    fileInput.addEventListener('change', (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      fileToResizedDataUrl(file, 480, (dataUrl)=>{
+        if(!task.images) task.images = [];
+        task.images.push(dataUrl);
+        saveStorage(); renderTaskList(topicKey);
+      });
+    });
+    imgBtn.addEventListener('click', ()=>fileInput.click());
+
+    const linkBtn = document.createElement('button');
+    linkBtn.className = 'icon-btn';
+    linkBtn.title = 'Add Google Drive link';
+    linkBtn.textContent = '\uD83D\uDD17';
+    linkBtn.addEventListener('click', ()=>{
+      const url = prompt('Paste Google Drive (or any) link:');
+      if(url && url.trim()){
+        if(!task.links) task.links = [];
+        task.links.push(url.trim());
+        saveStorage(); renderTaskList(topicKey);
+      }
+    });
+
+    const calBtn = document.createElement('button');
+    calBtn.className = 'icon-btn';
+    calBtn.title = 'Set due date';
+    calBtn.textContent = '\uD83D\uDCC5';
+    calBtn.addEventListener('click', ()=>{ task._dueOpen = !task._dueOpen; renderTaskList(topicKey); });
+
+    let dueBadge = null;
+    if(task.dueDate && !task._dueOpen){
+      const today = new Date().toISOString().slice(0,10);
+      dueBadge = document.createElement('span');
+      let cls = 'due-badge' + (task.emailReminder ? ' reminder' : '');
+      if(task.dueDate < today) cls += ' overdue';
+      else if(task.dueDate === today) cls += ' today';
+      dueBadge.className = cls;
+      dueBadge.textContent = task.dueDate;
+      dueBadge.title = task.emailReminder ? 'Email reminder set for this date' : 'Due date, no reminder';
+      dueBadge.addEventListener('click', ()=>{ task._dueOpen = true; renderTaskList(topicKey); });
+    }
+
+    const del = document.createElement('button');
+    del.className = 'task-del';
+    del.textContent = 'Delete task';
+    del.title = 'Delete this entire task';
+    del.addEventListener('click', ()=>{
+      if(confirm('Delete this task? This removes it and any attached images/links.')){
+        tasks = tasks.filter(t=>t.id!==task.id);
+        saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
+      }
+    });
+
+    top.appendChild(check);
+    top.appendChild(text);
+    top.appendChild(pill);
+    top.appendChild(statusSel);
+    if(dueBadge) top.appendChild(dueBadge);
+    top.appendChild(calBtn);
+    top.appendChild(imgBtn);
+    top.appendChild(fileInput);
+    top.appendChild(linkBtn);
+    top.appendChild(del);
+    body.appendChild(top);
+
+    if(task._dueOpen){
+      const panel = document.createElement('div');
+      panel.className = 'due-panel';
+      const dateInput = document.createElement('input');
+      dateInput.type = 'date';
+      dateInput.value = task.dueDate || '';
+      dateInput.addEventListener('change', (e)=>{ task.dueDate = e.target.value; saveStorage(); });
+      const label = document.createElement('label');
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = !!task.emailReminder;
+      checkbox.addEventListener('change', (e)=>{ task.emailReminder = e.target.checked; saveStorage(); });
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode('Email reminder on this date (optional)'));
+      const doneBtn = document.createElement('button');
+      doneBtn.className = 'due-remove';
+      doneBtn.textContent = 'Done';
+      doneBtn.style.textDecoration = 'none';
+      doneBtn.addEventListener('click', ()=>{ task._dueOpen = false; renderTaskList(topicKey); });
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'due-remove';
+      removeBtn.textContent = 'Remove due date';
+      removeBtn.addEventListener('click', ()=>{ task.dueDate=null; task.emailReminder=false; task._dueOpen=false; saveStorage(); renderTaskList(topicKey); });
+      panel.appendChild(dateInput);
+      panel.appendChild(label);
+      panel.appendChild(doneBtn);
+      panel.appendChild(removeBtn);
+      body.appendChild(panel);
+    }
+
+    if(task._expanded){
+      const box = document.createElement('textarea');
+      box.className = 'comment-input';
+      box.placeholder = 'Add a comment...';
+      box.value = task.comment || '';
+      box.addEventListener('blur', (e)=>{ task.comment = e.target.value; saveStorage(); });
+      body.appendChild(box);
+    } else if(task.comment){
+      const c = document.createElement('div');
+      c.className = 'task-comment';
+      c.textContent = task.comment;
+      body.appendChild(c);
+    }
+
+    if((task.images && task.images.length) || (task.links && task.links.length)){
+      const attachRow = document.createElement('div');
+      attachRow.className = 'attach-row';
+      (task.images||[]).forEach((src, idx)=>{
+        const wrap = document.createElement('div');
+        wrap.className = 'thumb-wrap';
+        const thumb = document.createElement('img');
+        thumb.className = 'thumb';
+        thumb.src = src;
+        thumb.addEventListener('click', ()=>openImageModal(src));
+        const x = document.createElement('button');
+        x.className = 'attach-x';
+        x.innerHTML = '&times;';
+        x.title = 'Remove image';
+        x.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          task.images.splice(idx,1);
+          saveStorage(); renderTaskList(topicKey);
+        });
+        wrap.appendChild(thumb);
+        wrap.appendChild(x);
+        attachRow.appendChild(wrap);
+      });
+      (task.links||[]).forEach((url, idx)=>{
+        const wrap = document.createElement('div');
+        wrap.className = 'drive-chip-wrap';
+        const chip = document.createElement('a');
+        chip.className = 'drive-chip';
+        chip.href = url;
+        chip.target = '_blank';
+        chip.rel = 'noopener noreferrer';
+        let display = url;
+        try{ display = new URL(url).hostname.replace('www.',''); }catch(e){}
+        chip.innerHTML = `\uD83D\uDD17 ${display}`;
+        const x = document.createElement('button');
+        x.className = 'chip-x';
+        x.innerHTML = '&times;';
+        x.title = 'Remove link';
+        x.addEventListener('click', (e)=>{
+          e.preventDefault(); e.stopPropagation();
+          task.links.splice(idx,1);
+          saveStorage(); renderTaskList(topicKey);
+        });
+        wrap.appendChild(chip);
+        wrap.appendChild(x);
+        attachRow.appendChild(wrap);
+      });
+      body.appendChild(attachRow);
+    }
+
+    card.appendChild(body);
+    el.appendChild(card);
+  });
+
+  const addRow = document.createElement('div');
+  addRow.className = 'add-row';
+  addRow.innerHTML = `
+    <input type="text" placeholder="Add a task...">
+    <select><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select>
+    <button class="add-btn">Add</button>
+  `;
+  const input = addRow.querySelector('input');
+  const sel = addRow.querySelector('select');
+  const btn = addRow.querySelector('button');
+  btn.addEventListener('click', ()=>{
+    const text = input.value.trim();
+    if(!text) return;
+    tasks.push({id:nextTaskId++, topic:topicKey, text, status:'not_started', priority:sel.value, comment:'', images:[], links:[], dueDate:null, emailReminder:false});
+    saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
+  });
+  input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') btn.click(); });
+  el.appendChild(addRow);
+}
+
+document.getElementById('export-btn').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify({tasks, formulaRows}, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'virt-tracker-backup.json'; a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('export-ics-btn').addEventListener('click', ()=>{
+  const reminderTasks = tasks.filter(t=>t.dueDate && t.emailReminder);
+  if(!reminderTasks.length){
+    alert('No tasks have an email reminder set yet. Click the calendar icon on a task to add one.');
+    return;
+  }
+  const pad = n => String(n).padStart(2,'0');
+  const stamp = ()=>{
+    const d = new Date();
+    return d.getUTCFullYear()+pad(d.getUTCMonth()+1)+pad(d.getUTCDate())+'T'+pad(d.getUTCHours())+pad(d.getUTCMinutes())+pad(d.getUTCSeconds())+'Z';
+  };
+  let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//VIRT Ops Ledger//EN\r\n';
+  reminderTasks.forEach(t=>{
+    const dateStr = t.dueDate.replace(/-/g,'');
+    const topicLabel = TOPICS.find(x=>x.key===t.topic).label;
+    ics += 'BEGIN:VEVENT\r\n';
+    ics += 'UID:'+t.id+'-'+dateStr+'@virt-ops-ledger\r\n';
+    ics += 'DTSTAMP:'+stamp()+'\r\n';
+    ics += 'DTSTART;VALUE=DATE:'+dateStr+'\r\n';
+    ics += 'DTEND;VALUE=DATE:'+dateStr+'\r\n';
+    ics += 'SUMMARY:VIRT deadline - '+t.text.replace(/[\r\n]/g,' ')+'\r\n';
+    ics += 'DESCRIPTION:Topic: '+topicLabel+'\r\n';
+    ics += 'BEGIN:VALARM\r\nACTION:EMAIL\r\nTRIGGER:PT0M\r\nSUMMARY:VIRT deadline today\r\nDESCRIPTION:'+t.text.replace(/[\r\n]/g,' ')+'\r\n';
+    ics += 'END:VALARM\r\n';
+    ics += 'END:VEVENT\r\n';
+  });
+  ics += 'END:VCALENDAR\r\n';
+  const blob = new Blob([ics], {type:'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'virt-reminders.ics'; a.click();
+  URL.revokeObjectURL(url);
+});
+document.getElementById('import-btn').addEventListener('click', ()=>{ document.getElementById('import-file').click(); });
+document.getElementById('import-file').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt)=>{
+    try{
+      const imported = JSON.parse(evt.target.result);
+      if(imported.tasks){
+        tasks = imported.tasks;
+        formulaRows = imported.formulaRows || [];
+        nextTaskId = Math.max(0, ...tasks.map(t=>t.id||0)) + 1;
+        nextFormulaId = Math.max(0, ...formulaRows.map(r=>r.id||0)) + 1;
+        saveStorage();
+        renderOverview(); renderTopicViews(); switchView('overview');
+      }
+    }catch(err){ alert('Could not read that file.'); }
+  };
+  reader.readAsText(file);
+});
+
+(async function init(){
+  const stored = await loadStorage();
+  if(stored && stored.tasks && stored.tasks.length){
+    tasks = stored.tasks;
+    formulaRows = stored.formulaRows || [];
+  } else {
+    tasks = JSON.parse(JSON.stringify(SEED_TASKS));
+    formulaRows = JSON.parse(JSON.stringify(SEED_FORMULA));
+  }
+  nextTaskId = Math.max(0, ...tasks.map(t=>t.id||0)) + 1;
+  nextFormulaId = Math.max(0, ...formulaRows.map(r=>r.id||0)) + 1;
+  renderOverview();
+  renderTopicViews();
+  switchView('overview');
+})();
+</script>
+</body>
+</html>
