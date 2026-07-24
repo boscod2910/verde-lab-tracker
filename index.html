@@ -40,6 +40,8 @@
   .nav-item.active .nav-dot{background:var(--accent);}
   .nav-pct{margin-left:auto;font-size:10.5px;color:var(--ink-faint);}
   .nav-item.active .nav-pct{color:var(--accent-dark);}
+  .nav-add-btn{margin-top:14px;padding:8px 10px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--accent-dark);background:var(--accent-light);cursor:pointer;text-align:center;}
+  .nav-add-btn:hover{background:#E1E1FA;}
   .main{flex:1;padding:32px 40px 60px;max-width:960px;}
   .page-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;}
   .page-head h1{font-family:'Manrope', sans-serif;font-weight:700;font-size:23px;margin:0 0 4px;}
@@ -87,8 +89,9 @@
   .status-select.in_progress{background:var(--amber-bg);color:var(--amber);}
   .status-select.done{background:var(--green-bg);color:var(--green);}
   .status-select.blocked{background:var(--red-bg);color:var(--red);}
-  .icon-btn{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:13px;padding:2px 4px;opacity:0.6;}
-  .icon-btn:hover{opacity:1;color:var(--accent);}
+  .icon-btn{background:none;border:none;color:var(--ink-faint);cursor:pointer;padding:3px;opacity:0.6;display:inline-flex;align-items:center;justify-content:center;border-radius:5px;}
+  .icon-btn:hover{opacity:1;color:var(--accent);background:var(--accent-light);}
+  .icon-btn svg{display:block;}
   .task-del{background:none;border:1px solid var(--line);color:var(--ink-faint);cursor:pointer;font-size:12px;padding:4px 9px;border-radius:8px;opacity:0.7;white-space:nowrap;}
   .task-del:hover{opacity:1;color:var(--red);border-color:var(--red-bg);background:var(--red-bg);}
   .task-comment{font-size:12.5px;color:var(--ink-dim);margin-top:6px;}
@@ -106,12 +109,18 @@
   .due-badge{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:8px;cursor:pointer;background:var(--gray-bg);color:var(--ink-dim);white-space:nowrap;}
   .due-badge.today{background:var(--amber-bg);color:var(--amber);}
   .due-badge.overdue{background:var(--red-bg);color:var(--red);}
-  .due-badge.reminder::before{content:'\1F514\00A0';}
+  .due-badge.reminder{display:inline-flex;align-items:center;gap:4px;}
   .due-panel{display:flex;align-items:center;gap:10px;margin-top:8px;padding:10px 12px;background:var(--gray-bg);border-radius:8px;font-size:12.5px;flex-wrap:wrap;}
   .due-panel input[type=date]{border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-family:'Inter',sans-serif;font-size:12.5px;}
   .due-panel label{display:flex;align-items:center;gap:5px;color:var(--ink-dim);}
   .due-panel .due-remove{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:12px;text-decoration:underline;}
   .due-panel .due-remove:hover{color:var(--red);}
+  .drag-handle{cursor:grab;color:var(--ink-faint);padding:2px;margin-top:3px;flex-shrink:0;user-select:none;display:inline-flex;align-items:center;}
+  .drag-handle svg{display:block;}
+  .drag-handle:active{cursor:grabbing;}
+  .task-card.dragging{opacity:0.4;}
+  .task-card.drag-over{border-color:var(--accent);box-shadow:inset 0 2px 0 var(--accent);}
+  .done-divider{font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.05em;margin:14px 0 8px;padding-top:4px;border-top:1px dashed var(--line);}
   .add-row{display:flex;gap:8px;margin-top:12px;}
   .add-row input[type=text]{flex:1;border:1px solid var(--line);border-radius:8px;font-size:13px;padding:8px 10px;font-family:'Inter',sans-serif;}
   .add-row select{border:1px solid var(--line);border-radius:8px;font-size:12px;padding:8px;font-family:'Inter',sans-serif;color:var(--ink-dim);}
@@ -138,6 +147,18 @@
   .footer-actions button{background:none;border:1px solid var(--line);color:var(--ink-dim);font-size:11.5px;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;}
   .footer-actions button:hover{color:var(--accent-dark);border-color:var(--accent);}
   #import-file{display:none;}
+  .history-modal{background:#fff;border-radius:12px;max-width:520px;width:90%;max-height:80vh;overflow-y:auto;padding:22px 24px;}
+  .history-modal h3{font-family:'Manrope',sans-serif;margin:0 0 4px;font-size:17px;}
+  .history-modal .sub{font-size:12.5px;color:var(--ink-dim);margin-bottom:16px;}
+  .history-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px;}
+  .history-row:last-child{border-bottom:none;}
+  .history-meta{color:var(--ink-dim);}
+  .history-restore{background:var(--accent-light);color:var(--accent-dark);border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;}
+  .history-restore:hover{background:#E1E1FA;}
+  .history-empty{font-size:13px;color:var(--ink-faint);padding:12px 0;}
+  .export-reminder{background:var(--gray-bg);color:var(--ink-dim);border-radius:8px;padding:8px 14px;font-size:12px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+  .export-reminder button{background:var(--accent);border:none;color:#fff;border-radius:6px;padding:4px 12px;font-size:11.5px;font-weight:600;cursor:pointer;}
+  .export-reminder button:hover{background:var(--accent-dark);}
 </style>
 </head>
 <body>
@@ -153,6 +174,7 @@
     <div class="page-head">
       <div><h1>Overview</h1><div class="sub">Nexo Austral Europa — all workstreams at a glance</div></div>
     </div>
+    <div id="export-reminder-slot"></div>
     <div class="kpi-row" id="kpi-row"></div>
     <div class="section-label">Needs attention</div>
     <div id="flag-list"></div>
@@ -162,6 +184,7 @@
       <button id="export-btn">Export backup (.json)</button>
       <button id="import-btn">Import backup</button>
       <button id="export-ics-btn">Export reminders (.ics)</button>
+      <button id="history-btn">Version history</button>
       <input type="file" id="import-file" accept="application/json">
     </div>
   </div>
@@ -171,7 +194,7 @@
 <div id="modal-root"></div>
 
 <script>
-const TOPICS = [
+const BASE_TOPICS = [
   {key:"legal", label:"Legal & Corporate", group:"Foundations"},
   {key:"ip", label:"Intellectual Property", group:"Foundations"},
   {key:"reg-spain", label:"Regulatory — Spain", group:"Foundations"},
@@ -195,6 +218,48 @@ const TOPICS = [
   {key:"privacy", label:"Data Privacy / GDPR", group:"Operations"},
   {key:"support", label:"Customer Support & Ops", group:"Operations"},
   {key:"risk", label:"Risk & Contingency", group:"Operations"}
+];
+
+let customTopics = [];
+let TOPICS = BASE_TOPICS.slice();
+let nextCustomTopicId = 1;
+
+function recomputeTopics(){
+  TOPICS = BASE_TOPICS.concat(customTopics);
+}
+
+function icon(name){
+  const icons = {
+    calendar: '<svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor"><path d="M6 1.5a1 1 0 0 1 1 1V3h6v-.5a1 1 0 1 1 2 0V3h.5A2.5 2.5 0 0 1 18 5.5v9A2.5 2.5 0 0 1 15.5 17h-11A2.5 2.5 0 0 1 2 14.5v-9A2.5 2.5 0 0 1 4.5 3H5v-.5a1 1 0 0 1 1-1zM4 8v6.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5V8H4z"/></svg>',
+    image: '<svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor"><path d="M4.5 3A2.5 2.5 0 0 0 2 5.5v9A2.5 2.5 0 0 0 4.5 17h11a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 15.5 3h-11zM7 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM4 14.2l3.6-4.3a.7.7 0 0 1 1.05-.03L11 12.2l1.9-2.4a.7.7 0 0 1 1.1 0l2 2.9V14.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-.3z"/></svg>',
+    link: '<svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor"><path d="M8.4 12.7a1 1 0 0 1 0-1.41l3.2-3.2a1 1 0 1 1 1.41 1.41l-3.2 3.2a1 1 0 0 1-1.41 0zM6.9 14.9l-.9.9a2.7 2.7 0 0 1-3.82-3.82l2.83-2.83a2.7 2.7 0 0 1 3.82 0 1 1 0 0 1-1.41 1.41.7.7 0 0 0-1 0L3.6 13.4a.7.7 0 0 0 1 1l.9-.9a1 1 0 1 1 1.41 1.4zM13.1 5.1l.9-.9a2.7 2.7 0 0 1 3.82 3.82l-2.83 2.83a2.7 2.7 0 0 1-3.82 0 1 1 0 1 1 1.41-1.41.7.7 0 0 0 1 0l2.83-2.83a.7.7 0 0 0-1-1l-.9.9a1 1 0 1 1-1.41-1.4z"/></svg>',
+    dots: '<svg viewBox="0 0 12 20" width="9" height="15" fill="currentColor"><circle cx="3.2" cy="4" r="1.5"/><circle cx="8.8" cy="4" r="1.5"/><circle cx="3.2" cy="10" r="1.5"/><circle cx="8.8" cy="10" r="1.5"/><circle cx="3.2" cy="16" r="1.5"/><circle cx="8.8" cy="16" r="1.5"/></svg>',
+    bell: '<svg viewBox="0 0 20 20" width="11" height="11" fill="currentColor"><path d="M10 2a1 1 0 0 1 1 1v.63a5.5 5.5 0 0 1 4 5.29v2.92l1.36 2.04a1 1 0 0 1-.83 1.55H4.47a1 1 0 0 1-.83-1.55L5 11.84V8.92a5.5 5.5 0 0 1 4-5.29V3a1 1 0 0 1 1-1zm-2 15a2 2 0 0 0 4 0H8z"/></svg>',
+    trash: '<svg viewBox="0 0 20 20" width="12" height="12" fill="currentColor"><path d="M8 1.5a1 1 0 0 0-1 1V3H4a1 1 0 0 0 0 2h12a1 1 0 1 0 0-2h-3v-.5a1 1 0 0 0-1-1H8zM4.8 6.5l.8 10.1a2 2 0 0 0 2 1.9h4.8a2 2 0 0 0 2-1.9l.8-10.1H4.8z"/></svg>'
+  };
+  return icons[name] || '';
+}
+
+
+const REGULATION_TASKS = [
+  {id:500,topic:"reg-eu",text:"Reg (EC) 178/2002 - General Food Law: traceability and safety principles",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:501,topic:"reg-eu",text:"Reg (EU) 1169/2011 - Food Information to Consumers: mandatory label content",status:"not_started",priority:"high",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:502,topic:"reg-eu",text:"Directive 2002/46/EC - Food Supplements Directive",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:503,topic:"reg-eu",text:"Reg (EC) 1924/2006 - Nutrition and Health Claims Regulation",status:"not_started",priority:"high",comment:"Governs every claim VIRT can legally make",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:504,topic:"reg-eu",text:"Check EU Register of authorised health claims per ingredient",status:"not_started",priority:"high",comment:"Confirm which claims apply to mate, Lion's Mane, ginger, lucuma",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:505,topic:"reg-eu",text:"Confirm Novel Food status for every ingredient (not just Guayusa)",status:"not_started",priority:"high",comment:"Reg (EU) 2015/2283 - check full ingredient list against EU Novel Food Catalogue",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:506,topic:"reg-eu",text:"Reg (EU) 2023/915 - contaminants: confirm PAH4 levels on KLM extract",status:"not_started",priority:"high",comment:"PAH4 limit for dried herb/plant powders is 50 micrograms/kg. Argentine-origin yerba mate has repeatedly tested above EU limits in independent studies due to smoke-drying process. Get a PAH4 certificate of analysis from KLM before finalizing sourcing.",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:507,topic:"reg-eu",text:"Reg (EC) 396/2005 - pesticide residue maximum limits",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:508,topic:"reg-eu",text:"Reg (EU) 2018/848 - Organic Production Regulation",status:"not_started",priority:"low",comment:"Only relevant if organic claim is revisited for Vehgro-sourced ingredients",images:[],links:[],dueDate:null,emailReminder:false},
+
+  {id:509,topic:"packaging",text:"Reg (EU) 2025/40 (PPWR) - packaging design, recyclability, EPR obligations",status:"not_started",priority:"high",comment:"Entered into force 11 Feb 2025, applies in full from 12 Aug 2026 - urgent, only weeks away",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:510,topic:"packaging",text:"Spain EPR transposition (RD 1055/2022) - producer registration",status:"not_started",priority:"high",comment:"Mandatory before placing packaged product on the Spanish market",images:[],links:[],dueDate:null,emailReminder:false},
+
+  {id:511,topic:"sales",text:"Directive 2011/83/EU - Consumer Rights Directive",status:"not_started",priority:"medium",comment:"Distance selling rules, 14-day withdrawal right, mandatory pre-contract info for D2C",images:[],links:[],dueDate:null,emailReminder:false},
+
+  {id:512,topic:"privacy",text:"Reg (EU) 2016/679 - GDPR compliance for D2C customer data",status:"not_started",priority:"high",comment:"Mandatory once the D2C site is live",images:[],links:[],dueDate:null,emailReminder:false},
+
+  {id:513,topic:"customs",text:"Reg (EU) 952/2013 - Union Customs Code",status:"done",priority:"medium",comment:"Already applied re: indirect customs representative route (FedEx Express Spain SLU, Art 18)",images:[],links:[],dueDate:null,emailReminder:false}
 ];
 
 const SEED_TASKS = [
@@ -253,6 +318,116 @@ const SEED_FORMULA = [
   {id:4,name:"Ginger extract",dose:"480 mg",pct:"16%",source:"Vehgro",notes:""}
 ];
 
+let history = [];
+const MAX_HISTORY = 8;
+
+async function loadHistory(){
+  try{
+    if(window.storage){
+      const res = await window.storage.get('virt-tracker-history');
+      if(res && res.value) return JSON.parse(res.value);
+    }
+  }catch(e){}
+  try{
+    const local = localStorage.getItem('virt-tracker-history');
+    if(local) return JSON.parse(local);
+  }catch(e){}
+  return [];
+}
+
+async function saveHistory(){
+  const payload = JSON.stringify(history);
+  try{
+    if(window.storage){ await window.storage.set('virt-tracker-history', payload); return; }
+  }catch(e){}
+  try{ localStorage.setItem('virt-tracker-history', payload); }
+  catch(e){
+    // storage quota likely hit (large images) - drop oldest half and retry once
+    history = history.slice(0, Math.ceil(history.length/2));
+    try{ localStorage.setItem('virt-tracker-history', JSON.stringify(history)); }catch(e2){ /* give up silently */ }
+  }
+}
+
+function snapshotBeforeChange(note){
+  history.unshift({
+    ts: new Date().toISOString(),
+    note: note,
+    snapshot: JSON.stringify({tasks, formulaRows})
+  });
+  if(history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
+  saveHistory();
+}
+
+function fmtTs(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+
+function getLastExport(){
+  try{ return localStorage.getItem('virt-last-export'); }catch(e){ return null; }
+}
+function setLastExport(){
+  try{ localStorage.setItem('virt-last-export', new Date().toISOString()); }catch(e){}
+}
+
+function renderExportReminder(){
+  const slot = document.getElementById('export-reminder-slot');
+  if(!slot) return;
+  const last = getLastExport();
+  slot.innerHTML = '';
+  const banner = document.createElement('div');
+  banner.className = 'export-reminder';
+  const label = last ? `Last backup export: ${fmtTs(last)}` : 'No backup exported yet — your data only lives in this browser.';
+  banner.innerHTML = `<span>${label}</span>`;
+  const btn = document.createElement('button');
+  btn.textContent = 'Export now';
+  btn.addEventListener('click', ()=>document.getElementById('export-btn').click());
+  banner.appendChild(btn);
+  slot.appendChild(banner);
+}
+
+function openHistoryModal(){
+  const root = document.getElementById('modal-root');
+  root.innerHTML = '';
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) root.innerHTML=''; });
+  const box = document.createElement('div');
+  box.className = 'history-modal';
+  box.innerHTML = `
+    <h3>Version history</h3>
+    <div class="sub">Automatic snapshots taken right before each deletion. Restoring is itself undoable.</div>
+  `;
+  if(!history.length){
+    box.innerHTML += '<div class="history-empty">No snapshots yet — one is taken automatically the first time you delete something.</div>';
+  } else {
+    history.forEach((h, idx)=>{
+      const row = document.createElement('div');
+      row.className = 'history-row';
+      row.innerHTML = `<span class="history-meta">${fmtTs(h.ts)} — ${h.note}</span>`;
+      const btn = document.createElement('button');
+      btn.className = 'history-restore';
+      btn.textContent = 'Restore';
+      btn.addEventListener('click', ()=>{
+        if(!confirm('Restore this version? Your current state will itself be saved as a snapshot first, so this is reversible.')) return;
+        snapshotBeforeChange('before restoring a previous version');
+        const restored = JSON.parse(h.snapshot);
+        tasks = restored.tasks;
+        formulaRows = restored.formulaRows || [];
+        nextTaskId = Math.max(0, ...tasks.map(t=>t.id||0)) + 1;
+        nextFormulaId = Math.max(0, ...formulaRows.map(r=>r.id||0)) + 1;
+        saveStorage();
+        root.innerHTML = '';
+        renderOverview(); renderTopicViews(); switchView('overview');
+      });
+      row.appendChild(btn);
+      box.appendChild(row);
+    });
+  }
+  overlay.appendChild(box);
+  root.appendChild(overlay);
+}
+
 let tasks = [];
 let formulaRows = [];
 let nextTaskId = 100;
@@ -273,7 +448,7 @@ async function loadStorage(){
 }
 
 async function saveStorage(){
-  const payload = JSON.stringify({tasks, formulaRows});
+  const payload = JSON.stringify({tasks, formulaRows, customTopics});
   try{
     if(window.storage){ await window.storage.set('virt-full-tracker', payload); return; }
   }catch(e){}
@@ -295,22 +470,124 @@ function renderNav(activeKey){
   overviewItem.addEventListener('click', ()=>switchView('overview'));
   nav.appendChild(overviewItem);
 
-  let lastGroup = null;
-  TOPICS.forEach(topic=>{
-    if(topic.group !== lastGroup){
-      const gl = document.createElement('div');
-      gl.className = 'nav-group-label';
-      gl.textContent = topic.group;
-      nav.appendChild(gl);
-      lastGroup = topic.group;
-    }
-    const stats = topicStats(topic.key);
-    const item = document.createElement('div');
-    item.className = 'nav-item' + (activeKey===topic.key?' active':'');
-    item.innerHTML = `<span class="nav-dot"></span>${topic.label}<span class="nav-pct">${stats.pct}%</span>`;
-    item.addEventListener('click', ()=>switchView(topic.key));
-    nav.appendChild(item);
+  const groupOrder = [];
+  TOPICS.forEach(t=>{ if(!groupOrder.includes(t.group)) groupOrder.push(t.group); });
+
+  groupOrder.forEach(group=>{
+    const gl = document.createElement('div');
+    gl.className = 'nav-group-label';
+    gl.textContent = group;
+    nav.appendChild(gl);
+    TOPICS.filter(t=>t.group===group).forEach(topic=>{
+      const stats = topicStats(topic.key);
+      const item = document.createElement('div');
+      item.className = 'nav-item' + (activeKey===topic.key?' active':'');
+      item.innerHTML = `<span class="nav-dot"></span>${topic.label}<span class="nav-pct">${stats.pct}%</span>`;
+      item.addEventListener('click', ()=>switchView(topic.key));
+      nav.appendChild(item);
+    });
   });
+
+  const addBtn = document.createElement('div');
+  addBtn.className = 'nav-add-btn';
+  addBtn.textContent = '+ Add master task';
+  addBtn.addEventListener('click', openAddMasterTaskModal);
+  nav.appendChild(addBtn);
+}
+
+function getThemeNames(){
+  const names = [];
+  TOPICS.forEach(t=>{ if(!names.includes(t.group)) names.push(t.group); });
+  return names;
+}
+
+function slugify(str){
+  return str.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+}
+
+function openAddMasterTaskModal(){
+  const root = document.getElementById('modal-root');
+  root.innerHTML = '';
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) root.innerHTML=''; });
+
+  const box = document.createElement('div');
+  box.className = 'history-modal';
+  box.innerHTML = `<h3>Add master task</h3><div class="sub">A master task is a new tab in the sidebar (like "Legal &amp; Corporate") that holds its own smaller tasks. Assign it to an existing theme or create a new one.</div>`;
+
+  const nameLabel = document.createElement('div');
+  nameLabel.style.fontSize = '12.5px';
+  nameLabel.style.color = 'var(--ink-dim)';
+  nameLabel.style.margin = '10px 0 4px';
+  nameLabel.textContent = 'Master task name';
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.placeholder = 'e.g. Quality Control';
+  nameInput.style.cssText = 'width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:Inter,sans-serif;box-sizing:border-box;';
+
+  const themeLabel = document.createElement('div');
+  themeLabel.style.fontSize = '12.5px';
+  themeLabel.style.color = 'var(--ink-dim)';
+  themeLabel.style.margin = '14px 0 4px';
+  themeLabel.textContent = 'Theme';
+  const themeSelect = document.createElement('select');
+  themeSelect.style.cssText = 'width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:Inter,sans-serif;';
+  getThemeNames().forEach(name=>{
+    const opt = document.createElement('option');
+    opt.value = name; opt.textContent = name;
+    themeSelect.appendChild(opt);
+  });
+  const newOpt = document.createElement('option');
+  newOpt.value = '__new__';
+  newOpt.textContent = '+ New theme...';
+  themeSelect.appendChild(newOpt);
+
+  const newThemeInput = document.createElement('input');
+  newThemeInput.type = 'text';
+  newThemeInput.placeholder = 'New theme name';
+  newThemeInput.style.cssText = 'width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:Inter,sans-serif;margin-top:8px;box-sizing:border-box;display:none;';
+  themeSelect.addEventListener('change', ()=>{
+    newThemeInput.style.display = themeSelect.value === '__new__' ? 'block' : 'none';
+  });
+
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'add-btn';
+  saveBtn.textContent = 'Create master task';
+  saveBtn.style.marginTop = '16px';
+  saveBtn.addEventListener('click', ()=>{
+    const name = nameInput.value.trim();
+    if(!name){ nameInput.focus(); return; }
+    let theme = themeSelect.value;
+    if(theme === '__new__'){
+      theme = newThemeInput.value.trim();
+      if(!theme){ newThemeInput.focus(); return; }
+    }
+    const key = 'custom' + (nextCustomTopicId++);
+    customTopics.push({key, label:name, group:theme});
+    recomputeTopics();
+    saveStorage();
+    root.innerHTML = '';
+    renderOverview();
+    renderTopicViews();
+    switchView(key);
+  });
+
+  const cancelBtn = document.createElement('button');
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.style.cssText = 'background:none;border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;margin-top:16px;margin-left:8px;';
+  cancelBtn.addEventListener('click', ()=>{ root.innerHTML=''; });
+
+  box.appendChild(nameLabel);
+  box.appendChild(nameInput);
+  box.appendChild(themeLabel);
+  box.appendChild(themeSelect);
+  box.appendChild(newThemeInput);
+  box.appendChild(saveBtn);
+  box.appendChild(cancelBtn);
+  overlay.appendChild(box);
+  root.appendChild(overlay);
+  nameInput.focus();
 }
 
 function switchView(key){
@@ -321,6 +598,7 @@ function switchView(key){
 }
 
 function renderOverview(){
+  renderExportReminder();
   const allDone = tasks.filter(t=>t.status==='done').length;
   const allTotal = tasks.length;
   const blocked = tasks.filter(t=>t.status==='blocked').length;
@@ -400,15 +678,32 @@ function renderTopicViews(){
     const stats = topicStats(topic.key);
     let extraHtml = '';
     if(topic.key === 'formula') extraHtml = `<div id="formula-panel-slot"></div>`;
+    const isCustom = topic.key.startsWith('custom');
     view.innerHTML = `
       <div class="page-head">
         <div><h1>${topic.label}</h1><div class="sub">${stats.total ? stats.done+' of '+stats.total+' tasks complete' : 'No tasks yet'}</div></div>
+        ${isCustom ? '<button class="task-del" id="delete-master-'+topic.key+'">Delete master task</button>' : ''}
       </div>
       ${extraHtml}
       <div id="tasklist-${topic.key}"></div>
     `;
     container.appendChild(view);
     if(topic.key === 'formula') renderFormulaPanel();
+    if(isCustom){
+      const delBtn = document.getElementById('delete-master-'+topic.key);
+      delBtn.addEventListener('click', ()=>{
+        const count = tasks.filter(t=>t.topic===topic.key).length;
+        if(!confirm('Delete "'+topic.label+'" and its '+count+' task(s)? This cannot be undone from here, but a snapshot will be saved to Version history first.')) return;
+        snapshotBeforeChange('before deleting master task: '+topic.label);
+        tasks = tasks.filter(t=>t.topic!==topic.key);
+        customTopics = customTopics.filter(t=>t.key!==topic.key);
+        recomputeTopics();
+        saveStorage();
+        renderOverview();
+        renderTopicViews();
+        switchView('overview');
+      });
+    }
   });
   TOPICS.forEach(topic=>renderTaskList(topic.key));
 }
@@ -443,6 +738,7 @@ function renderFormulaPanel(){
       });
     });
     tr.querySelector('.formula-del').addEventListener('click', ()=>{
+      snapshotBeforeChange('before deleting ingredient: '+(row.name || 'unnamed'));
       formulaRows = formulaRows.filter(r=>r.id!==row.id);
       saveStorage();
       renderTopicViews();
@@ -465,10 +761,14 @@ function renderFormulaPanel(){
   slot.appendChild(panel);
 }
 
+let draggedTaskId = null;
+
 function renderTaskList(topicKey){
   const el = document.getElementById('tasklist-'+topicKey);
   el.innerHTML = '';
   const topicTasks = tasks.filter(t=>t.topic===topicKey);
+  const activeTasks = topicTasks.filter(t=>t.status!=='done');
+  const doneTasks = topicTasks.filter(t=>t.status==='done');
 
   if(topicTasks.length === 0){
     const note = document.createElement('div');
@@ -477,9 +777,95 @@ function renderTaskList(topicKey){
     el.appendChild(note);
   }
 
-  topicTasks.forEach(task=>{
+  const activeList = document.createElement('div');
+  activeList.className = 'active-list';
+  activeList.id = 'active-list-'+topicKey;
+  el.appendChild(activeList);
+
+  activeTasks.forEach(task=>{
+    activeList.appendChild(buildTaskCard(task, topicKey, true));
+  });
+
+  if(doneTasks.length){
+    const divider = document.createElement('div');
+    divider.className = 'done-divider';
+    divider.textContent = 'Done';
+    el.appendChild(divider);
+    doneTasks.forEach(task=>{
+      el.appendChild(buildTaskCard(task, topicKey, false));
+    });
+  }
+
+  const addRow = document.createElement('div');
+  addRow.className = 'add-row';
+  addRow.innerHTML = `
+    <input type="text" placeholder="Add a task...">
+    <select><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select>
+    <button class="add-btn">Add</button>
+  `;
+  const input = addRow.querySelector('input');
+  const sel = addRow.querySelector('select');
+  const btn = addRow.querySelector('button');
+  btn.addEventListener('click', ()=>{
+    const text = input.value.trim();
+    if(!text) return;
+    tasks.push({id:nextTaskId++, topic:topicKey, text, status:'not_started', priority:sel.value, comment:'', images:[], links:[], dueDate:null, emailReminder:false});
+    saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
+  });
+  input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') btn.click(); });
+  el.appendChild(addRow);
+}
+
+function reorderTasks(draggedId, targetId){
+  const draggedIdx = tasks.findIndex(t=>t.id===draggedId);
+  if(draggedIdx === -1) return;
+  const [draggedTask] = tasks.splice(draggedIdx, 1);
+  const targetIdx = tasks.findIndex(t=>t.id===targetId);
+  if(targetIdx === -1){ tasks.push(draggedTask); }
+  else { tasks.splice(targetIdx, 0, draggedTask); }
+  saveStorage();
+}
+
+function buildTaskCard(task, topicKey, draggableEnabled){
     const card = document.createElement('div');
     card.className = 'task-card';
+    card.setAttribute('data-id', task.id);
+    if(draggableEnabled){
+      card.setAttribute('draggable', 'true');
+      card.addEventListener('dragstart', (e)=>{
+        draggedTaskId = task.id;
+        try{ e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(task.id)); }catch(err){}
+        card.classList.add('dragging');
+      });
+      card.addEventListener('dragend', ()=>{
+        card.classList.remove('dragging');
+        draggedTaskId = null;
+        document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));
+      });
+      card.addEventListener('dragover', (e)=>{
+        e.preventDefault();
+        if(draggedTaskId !== null && draggedTaskId !== task.id){
+          card.classList.add('drag-over');
+        }
+      });
+      card.addEventListener('dragleave', ()=>{ card.classList.remove('drag-over'); });
+      card.addEventListener('drop', (e)=>{
+        e.preventDefault();
+        card.classList.remove('drag-over');
+        if(draggedTaskId === null || draggedTaskId === task.id) return;
+        reorderTasks(draggedTaskId, task.id);
+        draggedTaskId = null;
+        renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
+      });
+    }
+
+    if(draggableEnabled){
+      const handle = document.createElement('span');
+      handle.className = 'drag-handle';
+      handle.innerHTML = icon('dots');
+      handle.title = 'Drag to reorder';
+      card.appendChild(handle);
+    }
 
     const check = document.createElement('button');
     check.className = 'task-check' + (task.status==='done'?' done':'');
@@ -519,7 +905,7 @@ function renderTaskList(topicKey){
     const imgBtn = document.createElement('button');
     imgBtn.className = 'icon-btn';
     imgBtn.title = 'Attach image';
-    imgBtn.textContent = '\uD83D\uDDBC';
+    imgBtn.innerHTML = icon('image');
     const fileInput = document.createElement('input');
     fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.style.display = 'none';
     fileInput.addEventListener('change', (e)=>{
@@ -536,7 +922,7 @@ function renderTaskList(topicKey){
     const linkBtn = document.createElement('button');
     linkBtn.className = 'icon-btn';
     linkBtn.title = 'Add Google Drive link';
-    linkBtn.textContent = '\uD83D\uDD17';
+    linkBtn.innerHTML = icon('link');
     linkBtn.addEventListener('click', ()=>{
       const url = prompt('Paste Google Drive (or any) link:');
       if(url && url.trim()){
@@ -549,7 +935,7 @@ function renderTaskList(topicKey){
     const calBtn = document.createElement('button');
     calBtn.className = 'icon-btn';
     calBtn.title = 'Set due date';
-    calBtn.textContent = '\uD83D\uDCC5';
+    calBtn.innerHTML = icon('calendar');
     calBtn.addEventListener('click', ()=>{ task._dueOpen = !task._dueOpen; renderTaskList(topicKey); });
 
     let dueBadge = null;
@@ -560,7 +946,7 @@ function renderTaskList(topicKey){
       if(task.dueDate < today) cls += ' overdue';
       else if(task.dueDate === today) cls += ' today';
       dueBadge.className = cls;
-      dueBadge.textContent = task.dueDate;
+      dueBadge.innerHTML = (task.emailReminder ? icon('bell') : '') + '<span>'+task.dueDate+'</span>';
       dueBadge.title = task.emailReminder ? 'Email reminder set for this date' : 'Due date, no reminder';
       dueBadge.addEventListener('click', ()=>{ task._dueOpen = true; renderTaskList(topicKey); });
     }
@@ -571,6 +957,7 @@ function renderTaskList(topicKey){
     del.title = 'Delete this entire task';
     del.addEventListener('click', ()=>{
       if(confirm('Delete this task? This removes it and any attached images/links.')){
+        snapshotBeforeChange('before deleting: '+task.text);
         tasks = tasks.filter(t=>t.id!==task.id);
         saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
       }
@@ -665,7 +1052,7 @@ function renderTaskList(topicKey){
         chip.rel = 'noopener noreferrer';
         let display = url;
         try{ display = new URL(url).hostname.replace('www.',''); }catch(e){}
-        chip.innerHTML = `\uD83D\uDD17 ${display}`;
+        chip.innerHTML = `${icon('link')} ${display}`;
         const x = document.createElement('button');
         x.className = 'chip-x';
         x.innerHTML = '&times;';
@@ -683,27 +1070,7 @@ function renderTaskList(topicKey){
     }
 
     card.appendChild(body);
-    el.appendChild(card);
-  });
-
-  const addRow = document.createElement('div');
-  addRow.className = 'add-row';
-  addRow.innerHTML = `
-    <input type="text" placeholder="Add a task...">
-    <select><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select>
-    <button class="add-btn">Add</button>
-  `;
-  const input = addRow.querySelector('input');
-  const sel = addRow.querySelector('select');
-  const btn = addRow.querySelector('button');
-  btn.addEventListener('click', ()=>{
-    const text = input.value.trim();
-    if(!text) return;
-    tasks.push({id:nextTaskId++, topic:topicKey, text, status:'not_started', priority:sel.value, comment:'', images:[], links:[], dueDate:null, emailReminder:false});
-    saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
-  });
-  input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') btn.click(); });
-  el.appendChild(addRow);
+    return card;
 }
 
 document.getElementById('export-btn').addEventListener('click', ()=>{
@@ -712,7 +1079,12 @@ document.getElementById('export-btn').addEventListener('click', ()=>{
   const a = document.createElement('a');
   a.href = url; a.download = 'virt-tracker-backup.json'; a.click();
   URL.revokeObjectURL(url);
+  setLastExport();
+  renderExportReminder();
 });
+
+document.getElementById('history-btn').addEventListener('click', openHistoryModal);
+
 
 document.getElementById('export-ics-btn').addEventListener('click', ()=>{
   const reminderTasks = tasks.filter(t=>t.dueDate && t.emailReminder);
@@ -773,12 +1145,34 @@ document.getElementById('import-file').addEventListener('change', (e)=>{
   if(stored && stored.tasks && stored.tasks.length){
     tasks = stored.tasks;
     formulaRows = stored.formulaRows || [];
+    customTopics = stored.customTopics || [];
   } else {
     tasks = JSON.parse(JSON.stringify(SEED_TASKS));
     formulaRows = JSON.parse(JSON.stringify(SEED_FORMULA));
+    customTopics = [];
   }
+  recomputeTopics();
+  nextCustomTopicId = 1;
+  customTopics.forEach(t=>{
+    const m = /^custom(\d+)$/.exec(t.key);
+    if(m) nextCustomTopicId = Math.max(nextCustomTopicId, Number(m[1])+1);
+  });
+
+  // Additive merge: add any new regulation tasks the user doesn't already have,
+  // matched by fixed id, without touching or reordering existing tasks.
+  const existingIds = new Set(tasks.map(t=>t.id));
+  let addedAny = false;
+  REGULATION_TASKS.forEach(regTask=>{
+    if(!existingIds.has(regTask.id)){
+      tasks.push(JSON.parse(JSON.stringify(regTask)));
+      addedAny = true;
+    }
+  });
+
   nextTaskId = Math.max(0, ...tasks.map(t=>t.id||0)) + 1;
   nextFormulaId = Math.max(0, ...formulaRows.map(r=>r.id||0)) + 1;
+  if(addedAny) saveStorage();
+  history = await loadHistory();
   renderOverview();
   renderTopicViews();
   switchView('overview');
