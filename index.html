@@ -72,23 +72,23 @@
     transition:color 0.08s;
   }
   .nav-item:hover{background:var(--surface-1);}
-  .nav-item.active{background:var(--bg-accent);border-left-color:var(--fill-accent);}
-  .nav-item.active .nav-item-icon{color:var(--text-accent);}
+  .nav-item.active{background:#EEF2FF;border-left-color:#4338CA;}
+  .nav-item.active .nav-item-icon{color:#4338CA;}
   .nav-label-text{
     flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     font-size:13px;font-weight:400;color:var(--text-secondary);transition:color 0.08s;
   }
-  .nav-item.active .nav-label-text{color:var(--text-accent);font-weight:500;}
-  .nav-item:hover:not(.active) .nav-label-text{color:var(--text-primary);}
-  .nav-pct{font-size:10px;color:var(--text-muted);flex-shrink:0;padding-right:2px;}
-  .nav-item.active .nav-pct{color:var(--text-accent);opacity:0.7;}
+  .nav-item.active .nav-label-text{color:#4338CA;font-weight:600;}
+  .nav-item:hover:not(.active) .nav-label-text{color:#111;}
+  .nav-pct{font-size:10px;color:#BBBBBB;flex-shrink:0;padding-right:2px;}
+  .nav-item.active .nav-pct{color:#8B7FCC;opacity:1;}
   .nav-add-btn{
-    margin:10px 12px 0;padding:8px 12px;border-radius:7px;font-size:12px;
-    font-weight:500;color:var(--text-accent);background:var(--bg-accent);cursor:pointer;
-    text-align:center;border:1px dashed var(--border-accent);transition:background 0.1s;
+    margin:10px 12px 0;padding:9px 12px;border-radius:7px;font-size:12.5px;
+    font-weight:600;color:#fff;background:#4338CA;cursor:pointer;
+    text-align:center;border:none;transition:background 0.1s;
     display:flex;align-items:center;justify-content:center;gap:6px;
   }
-  .nav-add-btn:hover{opacity:0.85;}
+  .nav-add-btn:hover{background:#3730A3;}
   .nav-footer{
     padding:10px 14px;border-top:0.5px solid var(--border);
     display:flex;align-items:center;gap:9px;flex-shrink:0;
@@ -99,23 +99,27 @@
     font-size:10px;font-weight:600;color:var(--text-accent);flex-shrink:0;
   }
   .nav-footer-email{font-size:11px;color:var(--text-muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .nav-footer-out{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;display:flex;border-radius:5px;}
-  .nav-footer-out:hover{color:var(--text-danger);background:var(--bg-danger);}
+  .nav-footer-out{background:none;border:1px solid #E5E7EB;color:#6B7280;cursor:pointer;padding:6px 8px;display:flex;border-radius:6px;gap:4px;font-size:11px;font-weight:500;align-items:center;}
+  .nav-footer-out:hover{color:#DC2626;border-color:#FCA5A5;background:#FEF2F2;}
   .nav-ctx-menu{
-    position:fixed;z-index:1000;background:var(--surface-2);
-    border:0.5px solid var(--border-strong);border-radius:8px;
-    padding:4px 0;min-width:160px;
-    box-shadow:0 4px 16px rgba(0,0,0,0.12);
+    position:fixed;z-index:1000;background:#fff;
+    border:1px solid #E5E7EB;border-radius:10px;
+    padding:4px 0;min-width:170px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.14),0 2px 6px rgba(0,0,0,0.08);
   }
   .nav-ctx-item{
-    display:flex;align-items:center;gap:8px;padding:7px 12px;
-    font-size:12.5px;color:var(--text-secondary);cursor:pointer;
+    display:flex;align-items:center;gap:9px;padding:8px 14px;
+    font-size:13px;color:#374151;cursor:pointer;white-space:nowrap;
   }
-  .nav-ctx-item i{font-size:14px;color:var(--text-muted);}
-  .nav-ctx-item:hover{background:var(--surface-1);color:var(--text-primary);}
-  .nav-ctx-item.danger{color:var(--text-danger);}
-  .nav-ctx-item.danger i{color:var(--text-danger);}
-  .nav-ctx-sep{height:0.5px;background:var(--border);margin:3px 0;}
+  .nav-ctx-item i{font-size:15px;color:#9CA3AF;width:16px;text-align:center;flex-shrink:0;}
+  .nav-ctx-item:hover{background:#F9FAFB;color:#111;}
+  .nav-ctx-item:hover i{color:#4338CA;}
+  .nav-ctx-item.danger{color:#DC2626;}
+  .nav-ctx-item.danger i{color:#DC2626;}
+  .nav-ctx-item.danger:hover{background:#FEF2F2;}
+  .nav-ctx-sep{height:1px;background:#F3F4F6;margin:3px 0;}
+  .brand-block:hover .brand-icon{opacity:0.8;}
+  .brand-edit-hint{font-size:9px;color:#AAA;margin-top:1px;}
   @media (hover:none) and (pointer:coarse){.nav-add-btn{opacity:1;}}
 
   .swipe-wrap{position:relative;overflow:hidden;display:block;}
@@ -422,6 +426,7 @@
   .export-reminder button{background:var(--accent);border:none;color:#fff;border-radius:6px;padding:4px 12px;font-size:11.5px;font-weight:600;cursor:pointer;}
   .export-reminder button:hover{background:var(--accent-dark);}
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -452,10 +457,10 @@
 <div id="sidebar-overlay"></div>
 <div class="sidebar" id="main-sidebar">
   <div class="sidebar-resize-handle" id="sidebar-resize-handle"></div>
-  <div class="brand-block">
-    <div class="brand-icon"><i class="ti ti-layout-list" aria-hidden="true"></i></div>
+  <div class="brand-block" id="brand-block" title="Click to customise name and logo" style="cursor:pointer;">
+    <div class="brand-icon" id="brand-icon-el"><i class="ti ti-layout-list" aria-hidden="true" id="brand-icon-i"></i></div>
     <div>
-      <div class="brand">Verde Lab</div>
+      <div class="brand" id="brand-name-el">Verde Lab</div>
       <div class="brand-sub">Project tracker</div>
     </div>
   </div>
@@ -465,7 +470,7 @@
   <div class="nav-footer" id="nav-footer">
     <div class="nav-footer-avatar" id="nav-footer-avatar">DB</div>
     <span class="nav-footer-email" id="nav-footer-email">Not signed in</span>
-    <button class="nav-footer-out" id="nav-footer-out-btn" title="Sign out"><i class="ti ti-logout" aria-hidden="true"></i></button>
+    <button class="nav-footer-out" id="nav-footer-out-btn" title="Sign out"><i class="ti ti-logout" aria-hidden="true"></i>Sign out</button>
   </div>
 </div>
 
@@ -2216,6 +2221,73 @@ document.getElementById('mobile-manage-add').addEventListener('click', ()=>{
   closeMobileManage();
   openAddMasterTaskModal();
 });
+
+// ---- Brand customisation ----
+(function(){
+  function loadBrand(){
+    try{
+      const b = JSON.parse(localStorage.getItem('virt-brand')||'{}');
+      if(b.name){ const el=document.getElementById('brand-name-el'); if(el) el.textContent=b.name; document.title=b.name+' — Project Tracker'; }
+      if(b.logoUrl){ const ic=document.getElementById('brand-icon-el'); if(ic){ ic.innerHTML=`<img src="${b.logoUrl}" style="width:28px;height:28px;border-radius:7px;object-fit:cover;">`; } }
+    }catch(e){}
+  }
+  loadBrand();
+
+  const brandBlock = document.getElementById('brand-block');
+  if(!brandBlock) return;
+  brandBlock.addEventListener('click', ()=>{
+    const root = document.getElementById('modal-root');
+    root.innerHTML = '';
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.addEventListener('click', (e)=>{ if(e.target===overlay) root.innerHTML=''; });
+    const box = document.createElement('div');
+    box.className = 'history-modal';
+
+    const current = JSON.parse(localStorage.getItem('virt-brand')||'{}');
+    box.innerHTML = `
+      <h3 style="font-family:'Manrope',sans-serif;margin:0 0 4px;font-size:16px;">Customise brand</h3>
+      <div style="font-size:12.5px;color:#888;margin-bottom:18px;">Change the name and logo shown in the sidebar.</div>
+      <label style="font-size:12px;color:#666;display:block;margin-bottom:4px;">Name</label>
+      <input id="brand-edit-name" type="text" value="${current.name||'Verde Lab'}" style="width:100%;border:1px solid #E5E7EB;border-radius:8px;padding:9px 10px;font-size:14px;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:14px;">
+      <label style="font-size:12px;color:#666;display:block;margin-bottom:4px;">Logo (paste image URL or upload PNG/SVG/JPG)</label>
+      <input id="brand-edit-url" type="text" value="${current.logoUrl||''}" placeholder="https://... or leave blank for default icon" style="width:100%;border:1px solid #E5E7EB;border-radius:8px;padding:9px 10px;font-size:13px;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:8px;">
+      <input type="file" id="brand-edit-file" accept="image/*" style="font-size:12px;color:#888;margin-bottom:16px;display:block;">
+      <div style="display:flex;gap:8px;">
+        <button id="brand-save-btn" style="flex:1;background:#4338CA;color:#fff;border:none;border-radius:8px;padding:10px;font-size:13.5px;font-weight:600;cursor:pointer;">Save</button>
+        <button id="brand-reset-btn" style="background:none;border:1px solid #E5E7EB;color:#888;border-radius:8px;padding:10px 14px;font-size:13px;cursor:pointer;">Reset</button>
+      </div>
+    `;
+    overlay.appendChild(box);
+    root.appendChild(overlay);
+
+    const fileInput = box.querySelector('#brand-edit-file');
+    fileInput.addEventListener('change', ()=>{
+      const file = fileInput.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev)=>{ box.querySelector('#brand-edit-url').value = ev.target.result; };
+      reader.readAsDataURL(file);
+    });
+
+    box.querySelector('#brand-save-btn').addEventListener('click', ()=>{
+      const name = box.querySelector('#brand-edit-name').value.trim() || 'Verde Lab';
+      const logoUrl = box.querySelector('#brand-edit-url').value.trim();
+      try{ localStorage.setItem('virt-brand', JSON.stringify({name, logoUrl})); }catch(e){}
+      root.innerHTML='';
+      loadBrand();
+    });
+    box.querySelector('#brand-reset-btn').addEventListener('click', ()=>{
+      try{ localStorage.removeItem('virt-brand'); }catch(e){}
+      const ic=document.getElementById('brand-icon-el');
+      if(ic) ic.innerHTML='<i class="ti ti-layout-list" aria-hidden="true"></i>';
+      const ne=document.getElementById('brand-name-el');
+      if(ne) ne.textContent='Verde Lab';
+      document.title='Verde Lab — Project Tracker';
+      root.innerHTML='';
+    });
+  });
+})();
 
 // ---- Sidebar resize ----
 (function(){
