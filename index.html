@@ -32,7 +32,15 @@
   .sidebar{
     width:260px;background:#FAFAFA;border-right:1px solid #EBEBEB;
     padding:0;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;
-    display:flex;flex-direction:column;
+    display:flex;flex-direction:column;min-width:180px;max-width:420px;
+  }
+  .sidebar-resize-handle{
+    position:absolute;top:0;right:-4px;bottom:0;width:8px;
+    cursor:col-resize;z-index:10;
+    background:transparent;
+  }
+  .sidebar-resize-handle:hover, .sidebar-resize-handle.dragging{
+    background:rgba(67,56,202,0.15);
   }
   .sidebar-inner{flex:1;padding:0 0 24px;}
   .brand-block{padding:20px 20px 14px;border-bottom:1px solid #EBEBEB;margin-bottom:8px;}
@@ -92,14 +100,17 @@
   .nav-dup-btn:hover{color:#4338CA;background:#EEF2FF;}
   .mm-group-more{background:none;border:none;color:#CCC;padding:8px;display:flex;}
 
-  .swipe-wrap{position:relative;overflow:hidden;}
-  .swipe-content{position:relative;background:#FAFAFA;transition:transform 0.18s ease;touch-action:pan-y;z-index:2;}
+  .swipe-wrap{position:relative;overflow:hidden;display:block;}
+  .swipe-content{position:relative;background:#FAFAFA;transition:transform 0.18s ease;touch-action:pan-y;z-index:2;display:block;}
   .swipe-delete-btn{
     position:absolute;top:0;right:0;bottom:0;width:76px;
     background:#DC2626;color:#fff;border:none;cursor:pointer;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
     font-size:10.5px;font-weight:600;z-index:1;
+    transform:translateX(76px);
   }
+  .swipe-content.swiped-open + .swipe-delete-btn,
+  .swipe-wrap:has(.swiped-open) .swipe-delete-btn{transform:translateX(0);}
   .swipe-delete-btn svg{display:block;}
 
   @media (hover: none) and (pointer: coarse){
@@ -428,7 +439,8 @@
   <span class="mobile-topbar-title">Verde Lab</span>
 </div>
 <div id="sidebar-overlay"></div>
-<div class="sidebar">
+<div class="sidebar" id="main-sidebar">
+  <div class="sidebar-resize-handle" id="sidebar-resize-handle"></div>
   <div class="brand-block">
     <div class="brand">Verde Lab</div>
     <div class="brand-sub">Project tracker</div>
@@ -2158,6 +2170,38 @@ document.getElementById('mobile-manage-add').addEventListener('click', ()=>{
   closeMobileManage();
   openAddMasterTaskModal();
 });
+
+// ---- Sidebar resize ----
+(function(){
+  const sidebar = document.getElementById('main-sidebar');
+  const handle = document.getElementById('sidebar-resize-handle');
+  if(!sidebar || !handle) return;
+  const MIN = 180, MAX = 420;
+  try{
+    const saved = localStorage.getItem('virt-sidebar-width');
+    if(saved) sidebar.style.width = Math.min(MAX, Math.max(MIN, Number(saved))) + 'px';
+  }catch(e){}
+  let startX, startW;
+  handle.addEventListener('mousedown', (e)=>{
+    startX = e.clientX;
+    startW = sidebar.getBoundingClientRect().width;
+    handle.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  });
+  document.addEventListener('mousemove', (e)=>{
+    if(!handle.classList.contains('dragging')) return;
+    const newW = Math.min(MAX, Math.max(MIN, startW + (e.clientX - startX)));
+    sidebar.style.width = newW + 'px';
+  });
+  document.addEventListener('mouseup', ()=>{
+    if(!handle.classList.contains('dragging')) return;
+    handle.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    try{ localStorage.setItem('virt-sidebar-width', sidebar.getBoundingClientRect().width); }catch(e){}
+  });
+})();
 
 document.getElementById('undo-btn').addEventListener('click', performUndo);
 document.getElementById('redo-btn').addEventListener('click', performRedo);
