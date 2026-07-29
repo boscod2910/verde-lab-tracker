@@ -32,7 +32,7 @@
   .sidebar{width:250px;background:var(--sidebar);border-right:1px solid var(--line);padding:24px 14px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;}
   .brand{font-family:'Manrope', sans-serif;font-weight:800;font-size:16px;letter-spacing:-0.01em;padding:0 8px 4px;}
   .brand-sub{font-size:11.5px;color:var(--ink-faint);padding:0 8px 20px;}
-  .nav-group-label{font-size:10.5px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.05em;padding:14px 10px 4px;}
+  .nav-group-label{font-size:10.5px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.05em;padding:14px 10px 4px;display:flex;align-items:center;justify-content:space-between;}
   .nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--ink-dim);cursor:pointer;margin-bottom:1px;}
   .nav-item:hover{background:var(--gray-bg);}
   .nav-item.active{background:var(--accent-light);color:var(--accent-dark);font-weight:600;}
@@ -42,6 +42,145 @@
   .nav-item.active .nav-pct{color:var(--accent-dark);}
   .nav-add-btn{margin-top:14px;padding:8px 10px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--accent-dark);background:var(--accent-light);cursor:pointer;text-align:center;}
   .nav-add-btn:hover{background:#E1E1FA;}
+  .nav-drag-handle{color:var(--ink-faint);display:inline-flex;align-items:center;cursor:grab;margin-right:2px;opacity:0;transition:opacity 0.1s ease;}
+  .nav-item:hover .nav-drag-handle{opacity:1;}
+  .nav-label-text{flex:1;}
+  .nav-dup-btn{background:none;border:none;color:var(--ink-faint);cursor:pointer;padding:2px;opacity:0;transition:opacity 0.1s ease;display:inline-flex;align-items:center;border-radius:4px;flex-shrink:0;}
+  .nav-item:hover .nav-dup-btn, .nav-group-label:hover .nav-dup-btn{opacity:1;}
+  .nav-dup-btn:hover{color:var(--accent);background:var(--accent-light);}
+
+  .swipe-wrap{position:relative;overflow:hidden;border-radius:8px;}
+  .swipe-content{position:relative;background:var(--sidebar);transition:transform 0.18s ease;touch-action:pan-y;z-index:2;}
+  .swipe-delete-btn{
+    position:absolute;top:0;right:0;bottom:0;width:76px;
+    background:var(--red);color:#fff;border:none;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    font-size:10.5px;font-weight:600;z-index:1;
+  }
+  .swipe-delete-btn svg{display:block;}
+
+  @media (hover: none) and (pointer: coarse){
+    .nav-drag-handle, .nav-dup-btn{opacity:1 !important;}
+  }
+
+  .undo-redo-float{
+    position:fixed;bottom:18px;right:18px;z-index:80;
+    display:flex;gap:4px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.12);padding:5px;
+  }
+  .undo-redo-float button{
+    height:38px;padding:0 12px;border:none;background:none;border-radius:9px;
+    color:var(--ink-dim);cursor:pointer;display:flex;align-items:center;gap:6px;
+    font-size:12.5px;font-weight:600;font-family:'Inter',sans-serif;
+  }
+  .undo-redo-float button:hover:not(:disabled){background:var(--accent-light);color:var(--accent-dark);}
+  .undo-redo-float button:disabled{opacity:0.3;cursor:default;}
+
+  .login-overlay{
+    position:fixed;inset:0;z-index:200;background:var(--bg);
+    display:none;align-items:center;justify-content:center;padding:20px;
+  }
+  .login-overlay.show{display:flex;}
+  .login-card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:32px 28px;width:100%;max-width:380px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.08);
+  }
+  .login-brand{font-family:'Manrope',sans-serif;font-weight:800;font-size:22px;margin-bottom:2px;}
+  .login-sub{font-size:13px;color:var(--ink-faint);margin-bottom:24px;}
+  .login-card input{
+    width:100%;border:1px solid var(--line);border-radius:10px;
+    padding:13px 14px;font-size:15px;font-family:'Inter',sans-serif;
+    margin-bottom:10px;box-sizing:border-box;
+  }
+  .login-card input:focus{outline:none;border-color:var(--accent);}
+  .login-primary{
+    width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;
+    padding:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+    margin-top:6px;
+  }
+  .login-primary:hover{background:var(--accent-dark);}
+  .login-secondary{
+    width:100%;background:none;border:none;color:var(--accent-dark);
+    padding:12px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;margin-top:4px;
+  }
+  .login-secondary:hover{text-decoration:underline;}
+  .login-note{font-size:12px;color:var(--ink-faint);text-align:center;margin-top:8px;line-height:1.5;}
+  .login-error{
+    display:none;background:var(--red-bg);color:var(--red);border-radius:8px;
+    padding:10px 12px;font-size:12.5px;margin-bottom:14px;line-height:1.4;
+  }
+  .login-error.show{display:block;}
+
+  .sync-status{
+    position:fixed;bottom:18px;left:18px;z-index:80;
+    font-size:11.5px;padding:7px 13px;border-radius:20px;
+    background:var(--card);border:1px solid var(--line);color:var(--ink-faint);
+    display:none;align-items:center;gap:6px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  }
+  .sync-status.show{display:flex;}
+  .sync-status.saving{color:var(--amber);}
+  .sync-status.saved{color:var(--green);}
+  .sync-status.error{color:var(--red);border-color:var(--red);}
+  .sync-status.offline{color:var(--ink-dim);}
+
+  .mobile-manage-overlay{
+    display:none;position:fixed;inset:0;z-index:90;background:var(--bg);
+    flex-direction:column;
+  }
+  .mobile-manage-overlay.open{display:flex;}
+  .mobile-manage-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 18px;border-bottom:1px solid var(--line);
+    font-family:'Manrope',sans-serif;font-weight:700;font-size:17px;
+    background:var(--sidebar);
+  }
+  .mobile-manage-header button{background:none;border:none;color:var(--ink-dim);padding:8px;display:flex;}
+  #mobile-manage-list{flex:1;overflow-y:auto;padding:8px 0 90px;}
+  .mm-group-label{
+    font-size:11.5px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;
+    letter-spacing:0.05em;padding:18px 18px 8px;display:flex;justify-content:space-between;align-items:center;
+  }
+  .mm-group-more{background:none;border:none;color:var(--ink-faint);padding:8px;display:flex;}
+  .mm-row{
+    display:flex;align-items:center;gap:12px;
+    padding:14px 18px;border-bottom:1px solid var(--line);
+    background:var(--card);
+  }
+  .mm-row-label{flex:1;font-size:15px;font-weight:500;}
+  .mm-row-pct{font-size:13px;color:var(--ink-faint);}
+  .mm-row-more{
+    background:none;border:none;color:var(--ink-dim);
+    width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  #mobile-manage-add{
+    position:fixed;left:16px;right:16px;bottom:16px;z-index:91;
+    background:var(--accent);color:#fff;border:none;border-radius:12px;
+    padding:15px;font-size:15px;font-weight:600;
+  }
+  .action-sheet-overlay{
+    position:fixed;inset:0;z-index:110;background:rgba(20,20,25,0.45);
+    display:flex;align-items:flex-end;
+  }
+  .action-sheet{
+    background:var(--card);width:100%;border-radius:16px 16px 0 0;
+    padding:8px 0 max(16px, env(safe-area-inset-bottom));
+  }
+  .action-sheet-title{
+    font-size:13px;color:var(--ink-faint);padding:12px 20px 8px;font-weight:600;
+  }
+  .action-sheet button{
+    display:block;width:100%;text-align:left;background:none;border:none;
+    padding:15px 20px;font-size:15.5px;color:var(--ink);
+  }
+  .action-sheet button.danger{color:var(--red);}
+  .action-sheet button:active{background:var(--gray-bg);}
+  .action-sheet .as-cancel{border-top:1px solid var(--line);margin-top:6px;color:var(--ink-dim);font-weight:600;}
+  .nav-item.dragging{opacity:0.4;}
+  .nav-item.drag-over{background:var(--accent-light);box-shadow:inset 0 2px 0 var(--accent);}
+  .nav-group-label.drag-over-label{color:var(--accent-dark);}
   .main{flex:1;padding:32px 40px 60px;max-width:960px;}
   .page-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;}
   .page-head h1{font-family:'Manrope', sans-serif;font-weight:700;font-size:23px;margin:0 0 4px;}
@@ -147,6 +286,64 @@
   .footer-actions button{background:none;border:1px solid var(--line);color:var(--ink-dim);font-size:11.5px;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;}
   .footer-actions button:hover{color:var(--accent-dark);border-color:var(--accent);}
   #import-file{display:none;}
+
+  .mobile-topbar{display:none;}
+  #sidebar-overlay{display:none;}
+  .formula-table-wrap{overflow-x:auto;}
+
+  @media (max-width: 860px){
+    body{flex-direction:column;}
+    .mobile-topbar{
+      display:flex;align-items:center;gap:12px;
+      position:sticky;top:0;z-index:40;
+      background:var(--sidebar);border-bottom:1px solid var(--line);
+      padding:12px 16px;
+    }
+    .mobile-topbar-title{font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;}
+    #mobile-menu-btn{background:none;border:none;color:var(--ink);padding:4px;display:flex;cursor:pointer;}
+    .sidebar{
+      position:fixed;top:0;left:0;bottom:0;z-index:60;
+      width:78vw;max-width:300px;
+      transform:translateX(-100%);
+      transition:transform 0.2s ease;
+      box-shadow:2px 0 16px rgba(0,0,0,0.15);
+    }
+    .sidebar.open{transform:translateX(0);}
+    #sidebar-overlay.open{
+      display:block;position:fixed;inset:0;background:rgba(20,20,25,0.4);z-index:50;
+    }
+    .main{padding:16px 14px 60px;max-width:100%;}
+    .page-head{flex-direction:column;align-items:flex-start;gap:10px;}
+    .kpi-row{grid-template-columns:repeat(2,1fr);gap:10px;}
+    .kpi-value{font-size:21px;}
+    .topic-grid{grid-template-columns:1fr;}
+    .flag-row{flex-wrap:wrap;}
+    .flag-row .topic-tag{margin-left:0;}
+    .task-card{padding:12px;gap:8px;}
+    .task-top{gap:8px;row-gap:10px;}
+    .icon-btn{width:38px;height:38px;padding:0;}
+    .icon-btn svg{width:18px;height:18px;}
+    .task-del{padding:8px 14px;font-size:12.5px;}
+    .status-select{padding:6px 10px;font-size:12px;}
+    .pill{padding:4px 10px;font-size:11px;}
+    .task-check{width:24px;height:24px;}
+    .due-panel{padding:12px;}
+    .due-panel select, .due-panel input[type=date]{padding:8px;font-size:13px;}
+    .add-row{flex-wrap:wrap;}
+    .add-row input[type=text]{flex-basis:100%;}
+    .add-row select{flex:1;}
+    .add-row .add-btn{flex:1;}
+    .due-panel{flex-wrap:wrap;}
+    .formula-table{font-size:12px;min-width:640px;}
+    .footer-actions{flex-wrap:wrap;justify-content:flex-start;}
+    .history-modal{width:92vw;padding:18px;}
+  }
+
+  @media (max-width: 460px){
+    .kpi-row{grid-template-columns:1fr 1fr;}
+    .page-head h1{font-size:19px;}
+    .task-text{font-size:13.5px;}
+  }
   .history-modal{background:#fff;border-radius:12px;max-width:520px;width:90%;max-height:80vh;overflow-y:auto;padding:22px 24px;}
   .history-modal h3{font-family:'Manrope',sans-serif;margin:0 0 4px;font-size:17px;}
   .history-modal .sub{font-size:12.5px;color:var(--ink-dim);margin-bottom:16px;}
@@ -160,14 +357,51 @@
   .export-reminder button{background:var(--accent);border:none;color:#fff;border-radius:6px;padding:4px 12px;font-size:11.5px;font-weight:600;cursor:pointer;}
   .export-reminder button:hover{background:var(--accent-dark);}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
+<div id="login-overlay" class="login-overlay show">
+  <div class="login-card">
+    <div class="login-brand">Verde Lab</div>
+    <div class="login-sub">Project tracker</div>
+    <div id="login-error" class="login-error"></div>
+    <input type="email" id="login-email" placeholder="Email" autocomplete="username">
+    <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
+    <button id="login-btn" class="login-primary">Sign in</button>
+    <button id="signup-btn" class="login-secondary">First time here? Create my account</button>
+    <div class="login-note">Your tasks sync securely across all your devices.</div>
+  </div>
+</div>
+
+<div id="sync-status" class="sync-status"></div>
+
+<div class="mobile-topbar">
+  <button id="mobile-menu-btn" aria-label="Open menu">
+    <svg viewBox="0 0 20 20" width="20" height="20" fill="currentColor"><path d="M3 5.5h14a1 1 0 1 0 0-2H3a1 1 0 0 0 0 2zm0 5.5h14a1 1 0 1 0 0-2H3a1 1 0 0 0 0 2zm0 5.5h14a1 1 0 1 0 0-2H3a1 1 0 0 0 0 2z"/></svg>
+  </button>
+  <span class="mobile-topbar-title">Verde Lab</span>
+</div>
+<div id="sidebar-overlay"></div>
 <div class="sidebar">
   <div class="brand">Verde Lab</div>
   <div class="brand-sub">Project tracker</div>
   <div id="nav"></div>
 </div>
+
+<div id="mobile-manage-overlay" class="mobile-manage-overlay">
+  <div class="mobile-manage-header">
+    <span>Master tasks</span>
+    <button id="mobile-manage-close" aria-label="Close">
+      <svg viewBox="0 0 20 20" width="20" height="20" fill="currentColor"><path d="M5.3 5.3a1 1 0 0 1 1.4 0L10 8.6l3.3-3.3a1 1 0 1 1 1.4 1.4L11.4 10l3.3 3.3a1 1 0 0 1-1.4 1.4L10 11.4l-3.3 3.3a1 1 0 0 1-1.4-1.4L8.6 10 5.3 6.7a1 1 0 0 1 0-1.4z"/></svg>
+    </button>
+  </div>
+  <div id="mobile-manage-list"></div>
+  <button id="mobile-manage-add">+ Add master task</button>
+</div>
+<div id="action-sheet-root"></div>
 
 <div class="main">
   <div id="overview" class="view active">
@@ -185,6 +419,7 @@
       <button id="import-btn">Import backup</button>
       <button id="export-ics-btn">Export reminders (.ics)</button>
       <button id="history-btn">Version history</button>
+      <button id="signout-btn">Sign out</button>
       <input type="file" id="import-file" accept="application/json">
     </div>
   </div>
@@ -192,6 +427,10 @@
 </div>
 
 <div id="modal-root"></div>
+<div class="undo-redo-float">
+  <button id="undo-btn" title="Undo (Ctrl/Cmd+Z)" disabled><svg viewBox="0 0 20 20" width="16" height="16" fill="currentColor"><path d="M6.4 4.6a1 1 0 0 1 0 1.4L4.8 7.6H12a5 5 0 0 1 0 10H8a1 1 0 1 1 0-2h4a3 3 0 0 0 0-6H4.8l1.6 1.6a1 1 0 1 1-1.4 1.4l-3.3-3.3a1 1 0 0 1 0-1.4L5 4.6a1 1 0 0 1 1.4 0z"/></svg><span>Undo</span></button>
+  <button id="redo-btn" title="Redo (Ctrl/Cmd+Shift+Z)" disabled><svg viewBox="0 0 20 20" width="16" height="16" fill="currentColor"><path d="M13.6 4.6a1 1 0 0 1 1.4 0l3.3 3.3a1 1 0 0 1 0 1.4L15 12.6a1 1 0 1 1-1.4-1.4l1.6-1.6H8a3 3 0 0 0 0 6h4a1 1 0 1 1 0 2H8a5 5 0 0 1 0-10h7.2l-1.6-1.6a1 1 0 0 1 0-1.4z"/></svg><span>Redo</span></button>
+</div>
 
 <script>
 const BASE_TOPICS = [
@@ -220,13 +459,8 @@ const BASE_TOPICS = [
   {key:"risk", label:"Risk & Contingency", group:"Operations"}
 ];
 
-let customTopics = [];
-let TOPICS = BASE_TOPICS.slice();
+let TOPICS = [];
 let nextCustomTopicId = 1;
-
-function recomputeTopics(){
-  TOPICS = BASE_TOPICS.concat(customTopics);
-}
 
 function icon(name){
   const icons = {
@@ -235,7 +469,10 @@ function icon(name){
     link: '<svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor"><path d="M8.4 12.7a1 1 0 0 1 0-1.41l3.2-3.2a1 1 0 1 1 1.41 1.41l-3.2 3.2a1 1 0 0 1-1.41 0zM6.9 14.9l-.9.9a2.7 2.7 0 0 1-3.82-3.82l2.83-2.83a2.7 2.7 0 0 1 3.82 0 1 1 0 0 1-1.41 1.41.7.7 0 0 0-1 0L3.6 13.4a.7.7 0 0 0 1 1l.9-.9a1 1 0 1 1 1.41 1.4zM13.1 5.1l.9-.9a2.7 2.7 0 0 1 3.82 3.82l-2.83 2.83a2.7 2.7 0 0 1-3.82 0 1 1 0 1 1 1.41-1.41.7.7 0 0 0 1 0l2.83-2.83a.7.7 0 0 0-1-1l-.9.9a1 1 0 1 1-1.41-1.4z"/></svg>',
     dots: '<svg viewBox="0 0 12 20" width="9" height="15" fill="currentColor"><circle cx="3.2" cy="4" r="1.5"/><circle cx="8.8" cy="4" r="1.5"/><circle cx="3.2" cy="10" r="1.5"/><circle cx="8.8" cy="10" r="1.5"/><circle cx="3.2" cy="16" r="1.5"/><circle cx="8.8" cy="16" r="1.5"/></svg>',
     bell: '<svg viewBox="0 0 20 20" width="11" height="11" fill="currentColor"><path d="M10 2a1 1 0 0 1 1 1v.63a5.5 5.5 0 0 1 4 5.29v2.92l1.36 2.04a1 1 0 0 1-.83 1.55H4.47a1 1 0 0 1-.83-1.55L5 11.84V8.92a5.5 5.5 0 0 1 4-5.29V3a1 1 0 0 1 1-1zm-2 15a2 2 0 0 0 4 0H8z"/></svg>',
-    trash: '<svg viewBox="0 0 20 20" width="12" height="12" fill="currentColor"><path d="M8 1.5a1 1 0 0 0-1 1V3H4a1 1 0 0 0 0 2h12a1 1 0 1 0 0-2h-3v-.5a1 1 0 0 0-1-1H8zM4.8 6.5l.8 10.1a2 2 0 0 0 2 1.9h4.8a2 2 0 0 0 2-1.9l.8-10.1H4.8z"/></svg>'
+    trash: '<svg viewBox="0 0 20 20" width="12" height="12" fill="currentColor"><path d="M8 1.5a1 1 0 0 0-1 1V3H4a1 1 0 0 0 0 2h12a1 1 0 1 0 0-2h-3v-.5a1 1 0 0 0-1-1H8zM4.8 6.5l.8 10.1a2 2 0 0 0 2 1.9h4.8a2 2 0 0 0 2-1.9l.8-10.1H4.8z"/></svg>',
+    move: '<svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor"><path d="M3 5a2 2 0 0 1 2-2h3.6a1 1 0 0 1 .8.4l1 1.3H15a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5zm7.3 3.3a1 1 0 0 1 1.4 0l2 2a1 1 0 0 1 0 1.4l-2 2a1 1 0 1 1-1.4-1.4l.3-.3H7a1 1 0 1 1 0-2h3.6l-.3-.3a1 1 0 0 1 0-1.4z"/></svg>',
+    copy: '<svg viewBox="0 0 20 20" width="13" height="13" fill="currentColor"><path d="M8 2a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6.8a2 2 0 0 0-.59-1.42l-2.79-2.8A2 2 0 0 0 11.2 2H8zm0 2h3v2a1 1 0 0 0 1 1h2v6H8V4zM5 6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2H5V8h1V6H5z"/></svg>',
+    kebab: '<svg viewBox="0 0 20 20" width="18" height="18" fill="currentColor"><circle cx="10" cy="4" r="1.8"/><circle cx="10" cy="10" r="1.8"/><circle cx="10" cy="16" r="1.8"/></svg>'
   };
   return icons[name] || '';
 }
@@ -259,7 +496,50 @@ const REGULATION_TASKS = [
 
   {id:512,topic:"privacy",text:"Reg (EU) 2016/679 - GDPR compliance for D2C customer data",status:"not_started",priority:"high",comment:"Mandatory once the D2C site is live",images:[],links:[],dueDate:null,emailReminder:false},
 
-  {id:513,topic:"customs",text:"Reg (EU) 952/2013 - Union Customs Code",status:"done",priority:"medium",comment:"Already applied re: indirect customs representative route (FedEx Express Spain SLU, Art 18)",images:[],links:[],dueDate:null,emailReminder:false}
+  {id:513,topic:"customs",text:"Reg (EU) 952/2013 - Union Customs Code",status:"done",priority:"medium",comment:"Already applied re: indirect customs representative route (FedEx Express Spain SLU, Art 18)",images:[],links:[],dueDate:null,emailReminder:false},
+
+  {id:550,topic:"reg-eu",text:"Confirm batch/lot traceability system, farm-to-jar (KLM to Vehgro to co-manufacturer to finished product)",status:"not_started",priority:"high",comment:"Reg (EC) 178/2002 Art 18",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:551,topic:"reg-eu",text:"Confirm KLM's and Vehgro's own traceability records satisfy Art 18",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:552,topic:"reg-eu",text:"Draft internal recall/withdrawal procedure",status:"not_started",priority:"medium",comment:"Reg (EC) 178/2002 Art 19-20 obligation",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:553,topic:"reg-eu",text:"Build mandatory label-element checklist",status:"not_started",priority:"high",comment:"FIC Reg 1169/2011: name, ingredients, allergens, net qty, durability date, storage, business name/address, nutrition declaration",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:554,topic:"reg-eu",text:"Confirm allergen/cross-contamination statement for shared co-manufacturer facility",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:555,topic:"reg-eu",text:"Legal sign-off on label text before print",status:"not_started",priority:"high",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:556,topic:"reg-eu",text:"Confirm product classifies correctly as a food supplement",status:"not_started",priority:"high",comment:"Directive 2002/46/EC - not a novel-food product or medicinal-claim risk",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:557,topic:"reg-eu",text:"Add mandatory supplement statements to label",status:"not_started",priority:"medium",comment:"Daily dose, 'do not exceed stated dose', 'not a substitute for a varied diet'",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:558,topic:"reg-eu",text:"List every marketing claim VIRT intends to make",status:"not_started",priority:"high",comment:"First step before cross-checking against Reg (EC) 1924/2006 register",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:559,topic:"reg-eu",text:"Reword or remove any unauthorised claim before print",status:"not_started",priority:"high",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:560,topic:"reg-eu",text:"Novel Food check: Lion's Mane extract",status:"not_started",priority:"high",comment:"Confirm against EU Novel Food Catalogue",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:561,topic:"reg-eu",text:"Novel Food check: Lucuma powder",status:"not_started",priority:"high",comment:"Confirm against EU Novel Food Catalogue",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:562,topic:"reg-eu",text:"Novel Food check: Ginger extract",status:"not_started",priority:"high",comment:"Confirm against EU Novel Food Catalogue",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:563,topic:"reg-eu",text:"Novel Food check: yerba mate itself",status:"not_started",priority:"high",comment:"Do not assume safe just because it's a known drink - confirm its actual Novel Food Catalogue entry directly",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:564,topic:"reg-eu",text:"Request PAH4 certificate of analysis from KLM for the batch in use",status:"not_started",priority:"high",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:565,topic:"reg-eu",text:"Confirm PAH4 result is under the 50 microgram/kg limit",status:"not_started",priority:"high",comment:"If over limit: evaluate alternate supplier or processing",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:566,topic:"reg-eu",text:"Agree ongoing PAH4 testing cadence (per batch or per year)",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:567,topic:"reg-eu",text:"Request pesticide residue test reports from KLM and Vehgro",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:568,topic:"reg-eu",text:"Confirm pesticide results under EU MRLs, file with dossier",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+
+  {id:569,topic:"packaging",text:"Confirm jar and lid recyclability classification",status:"not_started",priority:"high",comment:"PPWR Reg (EU) 2025/40",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:570,topic:"packaging",text:"Confirm design-for-recycling rules applicability",status:"not_started",priority:"high",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:571,topic:"packaging",text:"Confirm packaging-minimization ratio compliance",status:"not_started",priority:"medium",comment:"No excess empty space vs product volume",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:572,topic:"packaging",text:"Compliance-ready check before 12 Aug 2026 deadline",status:"not_started",priority:"high",comment:"PPWR applies in full from this date - only weeks away",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:573,topic:"packaging",text:"Register as packaging producer before first sale",status:"not_started",priority:"high",comment:"Spain EPR, RD 1055/2022",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:574,topic:"packaging",text:"Confirm which producer responsibility organization to join",status:"not_started",priority:"high",comment:"e.g. Ecoembes for household packaging - needs direct confirmation, not assumed",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:575,topic:"packaging",text:"Calculate applicable eco-fee by material and weight",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:576,topic:"packaging",text:"Set up annual placed-on-market declaration process",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+
+  {id:577,topic:"sales",text:"Draft mandatory pre-contract info for D2C checkout",status:"not_started",priority:"medium",comment:"Directive 2011/83/EU - identity, price incl taxes, delivery costs, withdrawal right",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:578,topic:"sales",text:"Build 14-day withdrawal policy page",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:579,topic:"sales",text:"Define return address and refund process",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:580,topic:"sales",text:"Add legally required cancellation form template to site",status:"not_started",priority:"low",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+
+  {id:581,topic:"privacy",text:"Draft privacy policy for the D2C site",status:"not_started",priority:"high",comment:"Reg (EU) 2016/679 GDPR",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:582,topic:"privacy",text:"Confirm legal basis/consent mechanism for marketing emails",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:583,topic:"privacy",text:"Confirm data processor agreements with third-party tools",status:"not_started",priority:"medium",comment:"e.g. Shopify, email platform",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:584,topic:"privacy",text:"Define data retention policy for customer records",status:"not_started",priority:"low",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+
+  {id:585,topic:"customs",text:"Keep indirect representation agreement on file",status:"done",priority:"low",comment:"FedEx Express Spain SLU precedent already established",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:586,topic:"customs",text:"Confirm correct HS/TARIC code for each import category",status:"not_started",priority:"medium",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
+  {id:587,topic:"customs",text:"Maintain per-shipment customs documentation archive",status:"not_started",priority:"low",comment:"",images:[],links:[],dueDate:null,emailReminder:false},
 ];
 
 const SEED_TASKS = [
@@ -352,7 +632,7 @@ function snapshotBeforeChange(note){
   history.unshift({
     ts: new Date().toISOString(),
     note: note,
-    snapshot: JSON.stringify({tasks, formulaRows})
+    snapshot: JSON.stringify({tasks, formulaRows, topics: TOPICS})
   });
   if(history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
   saveHistory();
@@ -414,8 +694,14 @@ function openHistoryModal(){
         const restored = JSON.parse(h.snapshot);
         tasks = restored.tasks;
         formulaRows = restored.formulaRows || [];
+        TOPICS = (restored.topics && restored.topics.length) ? restored.topics : TOPICS;
         nextTaskId = Math.max(0, ...tasks.map(t=>t.id||0)) + 1;
         nextFormulaId = Math.max(0, ...formulaRows.map(r=>r.id||0)) + 1;
+        nextCustomTopicId = 1;
+        TOPICS.forEach(t=>{
+          const m = /^custom(\d+)$/.exec(t.key);
+          if(m) nextCustomTopicId = Math.max(nextCustomTopicId, Number(m[1])+1);
+        });
         saveStorage();
         root.innerHTML = '';
         renderOverview(); renderTopicViews(); switchView('overview');
@@ -433,13 +719,67 @@ let formulaRows = [];
 let nextTaskId = 100;
 let nextFormulaId = 100;
 
+let firebaseReady = false;
+let fbAuth = null;
+let fbDb = null;
+let currentUser = null;
+
+try{
+  if(typeof firebase !== 'undefined' && firebase.initializeApp){
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0-jx_xs9M3Hyn8XTEXYqrTWZeLCNm6HI",
+      authDomain: "verde-lab-tracker.firebaseapp.com",
+      projectId: "verde-lab-tracker",
+      storageBucket: "verde-lab-tracker.firebasestorage.app",
+      messagingSenderId: "775990007202",
+      appId: "1:775990007202:web:5b5a8272b6bfac9c278efb"
+    };
+    firebase.initializeApp(firebaseConfig);
+    fbAuth = firebase.auth();
+    fbDb = firebase.firestore();
+    firebaseReady = true;
+  }
+}catch(e){
+  firebaseReady = false;
+}
+
+function setSyncStatus(state, message){
+  const el = document.getElementById('sync-status');
+  if(!el) return;
+  el.className = 'sync-status show ' + state;
+  const labels = {saving:'Saving…', saved:'Saved to cloud', error:'Not saved — will retry', offline:'Offline — saved on this device'};
+  el.textContent = message || labels[state] || '';
+  if(state === 'saved'){
+    setTimeout(()=>{ if(el.classList.contains('saved')) el.classList.remove('show'); }, 2000);
+  }
+}
+
 async function loadStorage(){
-  try{
-    if(window.storage){
-      const res = await window.storage.get('virt-full-tracker');
-      if(res && res.value) return JSON.parse(res.value);
+  if(currentUser){
+    try{
+      const snap = await fbDb.collection('trackers').doc(currentUser.uid).get();
+      if(snap.exists && snap.data() && snap.data().payload){
+        const cloud = snap.data().payload;
+        try{ localStorage.setItem('virt-full-tracker', cloud); }catch(e){}
+        return JSON.parse(cloud);
+      }
+      // No cloud data yet — migrate whatever is already in this browser, once.
+      let local = null;
+      try{ local = localStorage.getItem('virt-full-tracker'); }catch(e){}
+      if(local){
+        await fbDb.collection('trackers').doc(currentUser.uid).set({payload: local, updatedAt: Date.now()});
+        return JSON.parse(local);
+      }
+      return null;
+    }catch(e){
+      setSyncStatus('offline');
+      try{
+        const local = localStorage.getItem('virt-full-tracker');
+        if(local) return JSON.parse(local);
+      }catch(e2){}
+      return null;
     }
-  }catch(e){}
+  }
   try{
     const local = localStorage.getItem('virt-full-tracker');
     if(local) return JSON.parse(local);
@@ -447,18 +787,289 @@ async function loadStorage(){
   return null;
 }
 
-async function saveStorage(){
-  const payload = JSON.stringify({tasks, formulaRows, customTopics});
-  try{
-    if(window.storage){ await window.storage.set('virt-full-tracker', payload); return; }
-  }catch(e){}
+let undoStack = [];
+let redoStack = [];
+let lastSavedSnapshot = null;
+const MAX_UNDO = 30;
+
+let cloudSaveTimer = null;
+let pendingPayload = null;
+
+async function persistRaw(payload){
+  // Local cache first, so nothing is ever lost if the network is down.
   try{ localStorage.setItem('virt-full-tracker', payload); }catch(e){}
+  if(!currentUser) return;
+  pendingPayload = payload;
+  setSyncStatus('saving');
+  if(cloudSaveTimer) clearTimeout(cloudSaveTimer);
+  cloudSaveTimer = setTimeout(async ()=>{
+    const toSave = pendingPayload;
+    try{
+      await fbDb.collection('trackers').doc(currentUser.uid).set({payload: toSave, updatedAt: Date.now()});
+      setSyncStatus('saved');
+    }catch(e){
+      setSyncStatus('error');
+    }
+  }, 600);
+}
+
+async function saveStorage(){
+  const payload = JSON.stringify({tasks, formulaRows, topics: TOPICS});
+  if(lastSavedSnapshot !== null && lastSavedSnapshot !== payload){
+    undoStack.push(lastSavedSnapshot);
+    if(undoStack.length > MAX_UNDO) undoStack.shift();
+    redoStack = [];
+  }
+  lastSavedSnapshot = payload;
+  updateUndoRedoButtons();
+  await persistRaw(payload);
+}
+
+function recalcNextIds(){
+  nextTaskId = Math.max(0, ...tasks.map(t=>t.id||0)) + 1;
+  nextFormulaId = Math.max(0, ...formulaRows.map(r=>r.id||0)) + 1;
+  nextCustomTopicId = 1;
+  TOPICS.forEach(t=>{
+    const m = /^custom(\d+)$/.exec(t.key);
+    if(m) nextCustomTopicId = Math.max(nextCustomTopicId, Number(m[1])+1);
+  });
+}
+
+function restoreFromSnapshotStr(str){
+  const state = JSON.parse(str);
+  tasks = state.tasks;
+  formulaRows = state.formulaRows || [];
+  TOPICS = (state.topics && state.topics.length) ? state.topics : TOPICS;
+  recalcNextIds();
+}
+
+function performUndo(){
+  if(!undoStack.length) return;
+  const current = JSON.stringify({tasks, formulaRows, topics: TOPICS});
+  redoStack.push(current);
+  const prev = undoStack.pop();
+  restoreFromSnapshotStr(prev);
+  lastSavedSnapshot = prev;
+  persistRaw(prev);
+  updateUndoRedoButtons();
+  renderOverview(); renderTopicViews();
+  const activeView = document.querySelector('.view.active');
+  switchView(activeView ? activeView.id.replace('view-','') : 'overview');
+}
+
+function performRedo(){
+  if(!redoStack.length) return;
+  const current = JSON.stringify({tasks, formulaRows, topics: TOPICS});
+  undoStack.push(current);
+  const next = redoStack.pop();
+  restoreFromSnapshotStr(next);
+  lastSavedSnapshot = next;
+  persistRaw(next);
+  updateUndoRedoButtons();
+  renderOverview(); renderTopicViews();
+  const activeView = document.querySelector('.view.active');
+  switchView(activeView ? activeView.id.replace('view-','') : 'overview');
+}
+
+function updateUndoRedoButtons(){
+  const undoBtn = document.getElementById('undo-btn');
+  const redoBtn = document.getElementById('redo-btn');
+  if(undoBtn) undoBtn.disabled = undoStack.length === 0;
+  if(redoBtn) redoBtn.disabled = redoStack.length === 0;
 }
 
 function topicStats(key){
   const t = tasks.filter(x=>x.topic===key);
   const done = t.filter(x=>x.status==='done').length;
   return {total:t.length, done, pct: t.length? Math.round(done/t.length*100):0};
+}
+
+let draggedTopicKey = null;
+
+function reorderTopics(draggedKey, targetKey, targetGroup){
+  const draggedIdx = TOPICS.findIndex(t=>t.key===draggedKey);
+  if(draggedIdx === -1) return;
+  const [draggedTopic] = TOPICS.splice(draggedIdx, 1);
+  draggedTopic.group = targetGroup;
+  if(targetKey){
+    const targetIdx = TOPICS.findIndex(t=>t.key===targetKey);
+    if(targetIdx === -1){ TOPICS.push(draggedTopic); }
+    else { TOPICS.splice(targetIdx, 0, draggedTopic); }
+  } else {
+    // dropped on a group label: place at the end of that group's block
+    let lastIdx = -1;
+    TOPICS.forEach((t,i)=>{ if(t.group===targetGroup) lastIdx = i; });
+    if(lastIdx === -1){ TOPICS.push(draggedTopic); }
+    else { TOPICS.splice(lastIdx+1, 0, draggedTopic); }
+  }
+  saveStorage();
+}
+
+function attachSwipeToDelete(wrapEl, contentEl, onDelete){
+  let startX = 0, currentX = 0, dragging = false, opened = false;
+  const REVEAL = 76;
+
+  function closeAllOthers(){
+    document.querySelectorAll('.swipe-content.swiped-open').forEach(el=>{
+      if(el !== contentEl){ el.classList.remove('swiped-open'); el.style.transform = ''; }
+    });
+  }
+
+  contentEl.addEventListener('touchstart', (e)=>{
+    startX = e.touches[0].clientX;
+    dragging = true;
+  }, {passive:true});
+
+  contentEl.addEventListener('touchmove', (e)=>{
+    if(!dragging) return;
+    currentX = e.touches[0].clientX - startX;
+    if(opened) currentX -= REVEAL;
+    if(currentX > 0) currentX = 0;
+    if(currentX < -REVEAL) currentX = -REVEAL;
+    contentEl.style.transform = `translateX(${currentX}px)`;
+  }, {passive:true});
+
+  contentEl.addEventListener('touchend', ()=>{
+    dragging = false;
+    if(currentX < -REVEAL/2){
+      contentEl.style.transform = `translateX(-${REVEAL}px)`;
+      contentEl.classList.add('swiped-open');
+      opened = true;
+      closeAllOthers();
+    } else {
+      contentEl.style.transform = '';
+      contentEl.classList.remove('swiped-open');
+      opened = false;
+    }
+    currentX = 0;
+  });
+
+  const delBg = document.createElement('button');
+  delBg.className = 'swipe-delete-btn';
+  delBg.innerHTML = icon('trash') + '<span>Delete</span>';
+  delBg.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    contentEl.style.transform = '';
+    contentEl.classList.remove('swiped-open');
+    onDelete();
+  });
+  wrapEl.appendChild(delBg);
+}
+
+function moveTopicInGroup(key, direction){
+  const topic = TOPICS.find(t=>t.key===key);
+  if(!topic) return;
+  const group = topic.group;
+  const groupIndices = [];
+  TOPICS.forEach((t,i)=>{ if(t.group===group) groupIndices.push(i); });
+  const idxA = TOPICS.findIndex(t=>t.key===key);
+  const posInGroup = groupIndices.indexOf(idxA);
+  const targetPos = posInGroup + direction;
+  if(targetPos < 0 || targetPos >= groupIndices.length) return;
+  const idxB = groupIndices[targetPos];
+  const tmp = TOPICS[idxA];
+  TOPICS[idxA] = TOPICS[idxB];
+  TOPICS[idxB] = tmp;
+  saveStorage();
+}
+
+function openActionSheet(title, actions){
+  const root = document.getElementById('action-sheet-root');
+  root.innerHTML = '';
+  const overlay = document.createElement('div');
+  overlay.className = 'action-sheet-overlay';
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) root.innerHTML=''; });
+  const sheet = document.createElement('div');
+  sheet.className = 'action-sheet';
+  const titleEl = document.createElement('div');
+  titleEl.className = 'action-sheet-title';
+  titleEl.textContent = title;
+  sheet.appendChild(titleEl);
+  actions.forEach(a=>{
+    const btn = document.createElement('button');
+    if(a.danger) btn.className = 'danger';
+    btn.textContent = a.label;
+    btn.addEventListener('click', ()=>{
+      root.innerHTML = '';
+      a.onClick();
+    });
+    sheet.appendChild(btn);
+  });
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'as-cancel';
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.addEventListener('click', ()=>{ root.innerHTML=''; });
+  sheet.appendChild(cancelBtn);
+  overlay.appendChild(sheet);
+  root.appendChild(overlay);
+}
+
+function closeMobileManage(){
+  const el = document.getElementById('mobile-manage-overlay');
+  if(el) el.classList.remove('open');
+}
+
+function renderMobileManage(){
+  const list = document.getElementById('mobile-manage-list');
+  if(!list) return;
+  list.innerHTML = '';
+  const groupOrder = [];
+  TOPICS.forEach(t=>{ if(!groupOrder.includes(t.group)) groupOrder.push(t.group); });
+
+  groupOrder.forEach(group=>{
+    const gl = document.createElement('div');
+    gl.className = 'mm-group-label';
+    const glText = document.createElement('span');
+    glText.textContent = group;
+    const glMore = document.createElement('button');
+    glMore.className = 'mm-group-more';
+    glMore.innerHTML = icon('kebab');
+    glMore.addEventListener('click', ()=>{
+      openActionSheet(group, [
+        {label:'Duplicate theme (with all its master tasks)', onClick:()=>{
+          if(confirm('Duplicate the theme "'+group+'" along with all its master tasks and their sub-tasks?')) duplicateTheme(group);
+        }},
+        {label:'Delete theme', danger:true, onClick:()=>deleteTheme(group)}
+      ]);
+    });
+    gl.appendChild(glText);
+    gl.appendChild(glMore);
+    list.appendChild(gl);
+
+    const groupTopics = TOPICS.filter(t=>t.group===group);
+    groupTopics.forEach(topic=>{
+      const stats = topicStats(topic.key);
+      const row = document.createElement('div');
+      row.className = 'mm-row';
+      const label = document.createElement('span');
+      label.className = 'mm-row-label';
+      label.textContent = topic.label;
+      const pct = document.createElement('span');
+      pct.className = 'mm-row-pct';
+      pct.textContent = stats.pct + '%';
+      const more = document.createElement('button');
+      more.className = 'mm-row-more';
+      more.innerHTML = icon('kebab');
+
+      label.addEventListener('click', ()=>{ closeMobileManage(); switchView(topic.key); });
+      pct.addEventListener('click', ()=>{ closeMobileManage(); switchView(topic.key); });
+
+      more.addEventListener('click', ()=>{
+        openActionSheet(topic.label, [
+          {label:'Open', onClick:()=>{ closeMobileManage(); switchView(topic.key); }},
+          {label:'Duplicate', onClick:()=>duplicateMasterTask(topic.key)},
+          {label:'Move up', onClick:()=>{ moveTopicInGroup(topic.key,-1); renderNav('overview'); }},
+          {label:'Move down', onClick:()=>{ moveTopicInGroup(topic.key,1); renderNav('overview'); }},
+          {label:'Delete', danger:true, onClick:()=>deleteMasterTaskByKey(topic.key)}
+        ]);
+      });
+
+      row.appendChild(label);
+      row.appendChild(pct);
+      row.appendChild(more);
+      list.appendChild(row);
+    });
+  });
 }
 
 function renderNav(activeKey){
@@ -474,17 +1085,88 @@ function renderNav(activeKey){
   TOPICS.forEach(t=>{ if(!groupOrder.includes(t.group)) groupOrder.push(t.group); });
 
   groupOrder.forEach(group=>{
+    const glWrap = document.createElement('div');
+    glWrap.className = 'swipe-wrap';
     const gl = document.createElement('div');
-    gl.className = 'nav-group-label';
-    gl.textContent = group;
-    nav.appendChild(gl);
+    gl.className = 'nav-group-label swipe-content';
+    const glText = document.createElement('span');
+    glText.textContent = group;
+    const glDup = document.createElement('button');
+    glDup.className = 'nav-dup-btn';
+    glDup.title = 'Duplicate this theme (with all its master tasks)';
+    glDup.innerHTML = icon('copy');
+    glDup.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      if(!confirm('Duplicate the theme "'+group+'" along with all its master tasks and their sub-tasks?')) return;
+      duplicateTheme(group);
+    });
+    gl.appendChild(glText);
+    gl.appendChild(glDup);
+    gl.addEventListener('dragover', (e)=>{ e.preventDefault(); if(draggedTopicKey) gl.classList.add('drag-over-label'); });
+    gl.addEventListener('dragleave', ()=>gl.classList.remove('drag-over-label'));
+    gl.addEventListener('drop', (e)=>{
+      e.preventDefault();
+      gl.classList.remove('drag-over-label');
+      if(!draggedTopicKey) return;
+      reorderTopics(draggedTopicKey, null, group);
+      draggedTopicKey = null;
+      renderNav(activeKey);
+    });
+    glWrap.appendChild(gl);
+    attachSwipeToDelete(glWrap, gl, ()=>deleteTheme(group));
+    nav.appendChild(glWrap);
+
     TOPICS.filter(t=>t.group===group).forEach(topic=>{
       const stats = topicStats(topic.key);
+      const itemWrap = document.createElement('div');
+      itemWrap.className = 'swipe-wrap';
       const item = document.createElement('div');
-      item.className = 'nav-item' + (activeKey===topic.key?' active':'');
-      item.innerHTML = `<span class="nav-dot"></span>${topic.label}<span class="nav-pct">${stats.pct}%</span>`;
-      item.addEventListener('click', ()=>switchView(topic.key));
-      nav.appendChild(item);
+      item.className = 'nav-item swipe-content' + (activeKey===topic.key?' active':'');
+      item.setAttribute('draggable', 'true');
+      item.innerHTML = `<span class="nav-drag-handle">${icon('dots')}</span><span class="nav-dot"></span><span class="nav-label-text">${topic.label}</span><span class="nav-pct">${stats.pct}%</span>`;
+      const navDup = document.createElement('button');
+      navDup.className = 'nav-dup-btn';
+      navDup.title = 'Duplicate this master task';
+      navDup.innerHTML = icon('copy');
+      navDup.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        duplicateMasterTask(topic.key);
+      });
+      item.insertBefore(navDup, item.querySelector('.nav-pct'));
+      item.addEventListener('click', (e)=>{
+        if(item.classList.contains('swiped-open')){
+          item.style.transform = '';
+          item.classList.remove('swiped-open');
+          return;
+        }
+        if(!e.target.closest('.nav-drag-handle') && !e.target.closest('.nav-dup-btn')) switchView(topic.key);
+      });
+      item.addEventListener('dragstart', (e)=>{
+        draggedTopicKey = topic.key;
+        try{ e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain', topic.key); }catch(err){}
+        item.classList.add('dragging');
+      });
+      item.addEventListener('dragend', ()=>{
+        item.classList.remove('dragging');
+        document.querySelectorAll('.nav-item.drag-over, .nav-group-label.drag-over-label').forEach(el=>el.classList.remove('drag-over','drag-over-label'));
+        draggedTopicKey = null;
+      });
+      item.addEventListener('dragover', (e)=>{
+        e.preventDefault();
+        if(draggedTopicKey && draggedTopicKey !== topic.key) item.classList.add('drag-over');
+      });
+      item.addEventListener('dragleave', ()=>item.classList.remove('drag-over'));
+      item.addEventListener('drop', (e)=>{
+        e.preventDefault();
+        item.classList.remove('drag-over');
+        if(!draggedTopicKey || draggedTopicKey === topic.key) return;
+        reorderTopics(draggedTopicKey, topic.key, topic.group);
+        draggedTopicKey = null;
+        renderNav(activeKey);
+      });
+      itemWrap.appendChild(item);
+      attachSwipeToDelete(itemWrap, item, ()=>deleteMasterTaskByKey(topic.key));
+      nav.appendChild(itemWrap);
     });
   });
 
@@ -493,6 +1175,8 @@ function renderNav(activeKey){
   addBtn.textContent = '+ Add master task';
   addBtn.addEventListener('click', openAddMasterTaskModal);
   nav.appendChild(addBtn);
+
+  renderMobileManage();
 }
 
 function getThemeNames(){
@@ -564,8 +1248,7 @@ function openAddMasterTaskModal(){
       if(!theme){ newThemeInput.focus(); return; }
     }
     const key = 'custom' + (nextCustomTopicId++);
-    customTopics.push({key, label:name, group:theme});
-    recomputeTopics();
+    TOPICS.push({key, label:name, group:theme, custom:true});
     saveStorage();
     root.innerHTML = '';
     renderOverview();
@@ -678,34 +1361,117 @@ function renderTopicViews(){
     const stats = topicStats(topic.key);
     let extraHtml = '';
     if(topic.key === 'formula') extraHtml = `<div id="formula-panel-slot"></div>`;
-    const isCustom = topic.key.startsWith('custom');
     view.innerHTML = `
       <div class="page-head">
         <div><h1>${topic.label}</h1><div class="sub">${stats.total ? stats.done+' of '+stats.total+' tasks complete' : 'No tasks yet'}</div></div>
-        ${isCustom ? '<button class="task-del" id="delete-master-'+topic.key+'">Delete master task</button>' : ''}
+        <div style="display:flex;gap:8px;">
+          <button class="task-del" id="duplicate-master-${topic.key}">Duplicate</button>
+          <button class="task-del" id="delete-master-${topic.key}">Delete master task</button>
+        </div>
       </div>
       ${extraHtml}
       <div id="tasklist-${topic.key}"></div>
     `;
     container.appendChild(view);
     if(topic.key === 'formula') renderFormulaPanel();
-    if(isCustom){
-      const delBtn = document.getElementById('delete-master-'+topic.key);
-      delBtn.addEventListener('click', ()=>{
-        const count = tasks.filter(t=>t.topic===topic.key).length;
-        if(!confirm('Delete "'+topic.label+'" and its '+count+' task(s)? This cannot be undone from here, but a snapshot will be saved to Version history first.')) return;
-        snapshotBeforeChange('before deleting master task: '+topic.label);
-        tasks = tasks.filter(t=>t.topic!==topic.key);
-        customTopics = customTopics.filter(t=>t.key!==topic.key);
-        recomputeTopics();
-        saveStorage();
-        renderOverview();
-        renderTopicViews();
-        switchView('overview');
-      });
-    }
+
+    document.getElementById('duplicate-master-'+topic.key).addEventListener('click', ()=>{
+      duplicateMasterTask(topic.key);
+    });
+
+    document.getElementById('delete-master-'+topic.key).addEventListener('click', ()=>{
+      deleteMasterTaskByKey(topic.key);
+    });
   });
   TOPICS.forEach(topic=>renderTaskList(topic.key));
+}
+
+function deleteMasterTaskByKey(key){
+  const topic = TOPICS.find(t=>t.key===key);
+  if(!topic) return;
+  const count = tasks.filter(t=>t.topic===key).length;
+  if(!confirm('Delete "'+topic.label+'" and its '+count+' task(s)? A snapshot will be saved to Version history first, so this is recoverable.')) return;
+  snapshotBeforeChange('before deleting master task: '+topic.label);
+  tasks = tasks.filter(t=>t.topic!==key);
+  TOPICS = TOPICS.filter(t=>t.key!==key);
+  saveStorage();
+  renderOverview();
+  renderTopicViews();
+  switchView('overview');
+}
+
+function deleteTheme(groupName){
+  const topicsInGroup = TOPICS.filter(t=>t.group===groupName);
+  const topicKeys = topicsInGroup.map(t=>t.key);
+  const taskCount = tasks.filter(t=>topicKeys.includes(t.topic)).length;
+  if(!confirm('Delete the theme "'+groupName+'" — '+topicsInGroup.length+' master task(s) and '+taskCount+' total task(s)? A snapshot will be saved to Version history first.')) return;
+  snapshotBeforeChange('before deleting theme: '+groupName);
+  tasks = tasks.filter(t=>!topicKeys.includes(t.topic));
+  TOPICS = TOPICS.filter(t=>t.group!==groupName);
+  saveStorage();
+  renderOverview();
+  renderTopicViews();
+  switchView('overview');
+}
+
+function duplicateMasterTask(sourceKey){
+  const source = TOPICS.find(t=>t.key===sourceKey);
+  if(!source) return;
+  snapshotBeforeChange('before duplicating master task: '+source.label);
+  const newKey = 'custom' + (nextCustomTopicId++);
+  const sourceIdx = TOPICS.findIndex(t=>t.key===sourceKey);
+  const newTopic = {key:newKey, label:source.label+' (copy)', group:source.group, custom:true};
+  TOPICS.splice(sourceIdx+1, 0, newTopic);
+  const sourceTasks = tasks.filter(t=>t.topic===sourceKey);
+  sourceTasks.forEach(t=>{
+    tasks.push({
+      id: nextTaskId++,
+      topic: newKey,
+      text: t.text,
+      status: t.status,
+      priority: t.priority,
+      comment: t.comment,
+      images: (t.images||[]).slice(),
+      links: (t.links||[]).slice(),
+      dueDate: t.dueDate,
+      emailReminder: t.emailReminder
+    });
+  });
+  saveStorage();
+  renderOverview();
+  renderTopicViews();
+  switchView(newKey);
+}
+
+function duplicateTheme(groupName){
+  snapshotBeforeChange('before duplicating theme: '+groupName);
+  const newGroup = groupName + ' (copy)';
+  const topicsInGroup = TOPICS.filter(t=>t.group===groupName);
+  let firstNewKey = null;
+  topicsInGroup.forEach(source=>{
+    const newKey = 'custom' + (nextCustomTopicId++);
+    if(!firstNewKey) firstNewKey = newKey;
+    TOPICS.push({key:newKey, label:source.label, group:newGroup, custom:true});
+    const sourceTasks = tasks.filter(t=>t.topic===source.key);
+    sourceTasks.forEach(t=>{
+      tasks.push({
+        id: nextTaskId++,
+        topic: newKey,
+        text: t.text,
+        status: t.status,
+        priority: t.priority,
+        comment: t.comment,
+        images: (t.images||[]).slice(),
+        links: (t.links||[]).slice(),
+        dueDate: t.dueDate,
+        emailReminder: t.emailReminder
+      });
+    });
+  });
+  saveStorage();
+  renderOverview();
+  renderTopicViews();
+  switchView('overview');
 }
 
 function renderFormulaPanel(){
@@ -747,7 +1513,10 @@ function renderFormulaPanel(){
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
-  panel.appendChild(table);
+  const tableWrap = document.createElement('div');
+  tableWrap.className = 'formula-table-wrap';
+  tableWrap.appendChild(table);
+  panel.appendChild(tableWrap);
   const addBtn = document.createElement('button');
   addBtn.className = 'formula-add-btn';
   addBtn.textContent = '+ Add ingredient';
@@ -938,6 +1707,12 @@ function buildTaskCard(task, topicKey, draggableEnabled){
     calBtn.innerHTML = icon('calendar');
     calBtn.addEventListener('click', ()=>{ task._dueOpen = !task._dueOpen; renderTaskList(topicKey); });
 
+    const moveBtn = document.createElement('button');
+    moveBtn.className = 'icon-btn';
+    moveBtn.title = 'Move to another master task';
+    moveBtn.innerHTML = icon('move');
+    moveBtn.addEventListener('click', ()=>{ task._moveOpen = !task._moveOpen; renderTaskList(topicKey); });
+
     let dueBadge = null;
     if(task.dueDate && !task._dueOpen){
       const today = new Date().toISOString().slice(0,10);
@@ -972,8 +1747,69 @@ function buildTaskCard(task, topicKey, draggableEnabled){
     top.appendChild(imgBtn);
     top.appendChild(fileInput);
     top.appendChild(linkBtn);
+    top.appendChild(moveBtn);
     top.appendChild(del);
     body.appendChild(top);
+
+    if(task._moveOpen){
+      const panel = document.createElement('div');
+      panel.className = 'due-panel';
+      const label = document.createElement('label');
+      label.textContent = 'Send to master task:';
+      const select = document.createElement('select');
+      select.style.cssText = 'border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-family:Inter,sans-serif;font-size:12.5px;';
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = 'Choose master task...';
+      select.appendChild(placeholder);
+      TOPICS.filter(t=>t.key!==topicKey).forEach(t=>{
+        const opt = document.createElement('option');
+        opt.value = t.key;
+        opt.textContent = t.label;
+        select.appendChild(opt);
+      });
+      const moveActionBtn = document.createElement('button');
+      moveActionBtn.className = 'due-remove';
+      moveActionBtn.textContent = 'Move';
+      moveActionBtn.style.textDecoration = 'none';
+      moveActionBtn.addEventListener('click', ()=>{
+        if(!select.value) return;
+        snapshotBeforeChange('before moving task: '+task.text);
+        task.topic = select.value;
+        task._moveOpen = false;
+        saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
+      });
+      const copyActionBtn = document.createElement('button');
+      copyActionBtn.className = 'due-remove';
+      copyActionBtn.textContent = 'Copy';
+      copyActionBtn.addEventListener('click', ()=>{
+        if(!select.value) return;
+        tasks.push({
+          id: nextTaskId++,
+          topic: select.value,
+          text: task.text,
+          status: task.status,
+          priority: task.priority,
+          comment: task.comment,
+          images: (task.images||[]).slice(),
+          links: (task.links||[]).slice(),
+          dueDate: task.dueDate,
+          emailReminder: task.emailReminder
+        });
+        task._moveOpen = false;
+        saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
+      });
+      const cancelActionBtn = document.createElement('button');
+      cancelActionBtn.className = 'due-remove';
+      cancelActionBtn.textContent = 'Cancel';
+      cancelActionBtn.addEventListener('click', ()=>{ task._moveOpen = false; renderTaskList(topicKey); });
+      panel.appendChild(label);
+      panel.appendChild(select);
+      panel.appendChild(moveActionBtn);
+      panel.appendChild(copyActionBtn);
+      panel.appendChild(cancelActionBtn);
+      body.appendChild(panel);
+    }
 
     if(task._dueOpen){
       const panel = document.createElement('div');
@@ -1074,7 +1910,7 @@ function buildTaskCard(task, topicKey, draggableEnabled){
 }
 
 document.getElementById('export-btn').addEventListener('click', ()=>{
-  const blob = new Blob([JSON.stringify({tasks, formulaRows}, null, 2)], {type:'application/json'});
+  const blob = new Blob([JSON.stringify({tasks, formulaRows, topics: TOPICS}, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = 'virt-tracker-backup.json'; a.click();
@@ -1130,8 +1966,14 @@ document.getElementById('import-file').addEventListener('change', (e)=>{
       if(imported.tasks){
         tasks = imported.tasks;
         formulaRows = imported.formulaRows || [];
+        TOPICS = (imported.topics && imported.topics.length) ? imported.topics : BASE_TOPICS.slice();
         nextTaskId = Math.max(0, ...tasks.map(t=>t.id||0)) + 1;
         nextFormulaId = Math.max(0, ...formulaRows.map(r=>r.id||0)) + 1;
+        nextCustomTopicId = 1;
+        TOPICS.forEach(t=>{
+          const m = /^custom(\d+)$/.exec(t.key);
+          if(m) nextCustomTopicId = Math.max(nextCustomTopicId, Number(m[1])+1);
+        });
         saveStorage();
         renderOverview(); renderTopicViews(); switchView('overview');
       }
@@ -1140,20 +1982,19 @@ document.getElementById('import-file').addEventListener('change', (e)=>{
   reader.readAsText(file);
 });
 
-(async function init(){
+async function initApp(){
   const stored = await loadStorage();
   if(stored && stored.tasks && stored.tasks.length){
     tasks = stored.tasks;
     formulaRows = stored.formulaRows || [];
-    customTopics = stored.customTopics || [];
+    TOPICS = (stored.topics && stored.topics.length) ? stored.topics : BASE_TOPICS.slice();
   } else {
     tasks = JSON.parse(JSON.stringify(SEED_TASKS));
     formulaRows = JSON.parse(JSON.stringify(SEED_FORMULA));
-    customTopics = [];
+    TOPICS = BASE_TOPICS.slice();
   }
-  recomputeTopics();
   nextCustomTopicId = 1;
-  customTopics.forEach(t=>{
+  TOPICS.forEach(t=>{
     const m = /^custom(\d+)$/.exec(t.key);
     if(m) nextCustomTopicId = Math.max(nextCustomTopicId, Number(m[1])+1);
   });
@@ -1171,12 +2012,129 @@ document.getElementById('import-file').addEventListener('change', (e)=>{
 
   nextTaskId = Math.max(0, ...tasks.map(t=>t.id||0)) + 1;
   nextFormulaId = Math.max(0, ...formulaRows.map(r=>r.id||0)) + 1;
+  lastSavedSnapshot = JSON.stringify({tasks, formulaRows, topics: TOPICS});
   if(addedAny) saveStorage();
   history = await loadHistory();
   renderOverview();
   renderTopicViews();
   switchView('overview');
-})();
+  updateUndoRedoButtons();
+}
+
+// ---- Authentication ----
+const loginOverlay = document.getElementById('login-overlay');
+const loginEmail = document.getElementById('login-email');
+const loginPassword = document.getElementById('login-password');
+const loginError = document.getElementById('login-error');
+let appStarted = false;
+
+function showLoginError(msg){
+  loginError.textContent = msg;
+  loginError.classList.add('show');
+}
+function clearLoginError(){
+  loginError.textContent = '';
+  loginError.classList.remove('show');
+}
+
+function friendlyAuthError(e){
+  const code = (e && e.code) || '';
+  if(code.indexOf('invalid-credential') !== -1 || code.indexOf('wrong-password') !== -1 || code.indexOf('user-not-found') !== -1){
+    return 'That email or password did not match. If this is your first time, use "Create my account" below.';
+  }
+  if(code.indexOf('email-already-in-use') !== -1){
+    return 'An account already exists for this email — use Sign in instead.';
+  }
+  if(code.indexOf('weak-password') !== -1){
+    return 'Password needs to be at least 6 characters.';
+  }
+  if(code.indexOf('invalid-email') !== -1){
+    return 'That does not look like a valid email address.';
+  }
+  if(code.indexOf('network') !== -1){
+    return 'Network problem — check your connection and try again.';
+  }
+  return (e && e.message) ? e.message : 'Something went wrong. Please try again.';
+}
+
+document.getElementById('login-btn').addEventListener('click', async ()=>{
+  clearLoginError();
+  try{
+    await fbAuth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
+  }catch(e){ showLoginError(friendlyAuthError(e)); }
+});
+
+document.getElementById('signup-btn').addEventListener('click', async ()=>{
+  clearLoginError();
+  try{
+    await fbAuth.createUserWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
+  }catch(e){ showLoginError(friendlyAuthError(e)); }
+});
+
+loginPassword.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') document.getElementById('login-btn').click();
+});
+
+if(!firebaseReady){
+  // Cloud sync unavailable (offline, blocked, or previewing outside the live site).
+  // Run in local-only mode so the tracker still works.
+  loginOverlay.classList.remove('show');
+  setSyncStatus('offline', 'Local only — cloud sync unavailable here');
+  appStarted = true;
+  initApp();
+} else {
+  fbAuth.onAuthStateChanged(async (user)=>{
+    if(user){
+      currentUser = user;
+      loginOverlay.classList.remove('show');
+      if(!appStarted){
+        appStarted = true;
+        await initApp();
+      }
+    } else {
+      currentUser = null;
+      loginOverlay.classList.add('show');
+    }
+  });
+}
+
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileManageOverlay = document.getElementById('mobile-manage-overlay');
+
+mobileMenuBtn.addEventListener('click', ()=>{
+  renderMobileManage();
+  mobileManageOverlay.classList.add('open');
+});
+document.getElementById('mobile-manage-close').addEventListener('click', closeMobileManage);
+document.getElementById('mobile-manage-add').addEventListener('click', ()=>{
+  closeMobileManage();
+  openAddMasterTaskModal();
+});
+
+document.getElementById('undo-btn').addEventListener('click', performUndo);
+document.getElementById('redo-btn').addEventListener('click', performRedo);
+document.getElementById('signout-btn').addEventListener('click', async ()=>{
+  if(!firebaseReady || !currentUser){
+    alert('Cloud sync is not active here, so there is nothing to sign out of. Open the live site to sign in.');
+    return;
+  }
+  if(!confirm('Sign out? Your data stays safely in the cloud and will be here when you sign back in.')) return;
+  if(cloudSaveTimer){
+    clearTimeout(cloudSaveTimer);
+    try{
+      await fbDb.collection('trackers').doc(currentUser.uid).set({payload: pendingPayload, updatedAt: Date.now()});
+    }catch(e){}
+  }
+  await fbAuth.signOut();
+  location.reload();
+});
+document.addEventListener('keydown', (e)=>{
+  const meta = e.metaKey || e.ctrlKey;
+  if(!meta) return;
+  const key = e.key.toLowerCase();
+  if(key === 'z' && !e.shiftKey){ e.preventDefault(); performUndo(); }
+  else if((key === 'z' && e.shiftKey) || key === 'y'){ e.preventDefault(); performRedo(); }
+});
 </script>
 </body>
 </html>
