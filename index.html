@@ -30,7 +30,7 @@
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter', sans-serif;display:flex;min-height:100vh;}
   .sidebar{
-    width:240px;background:#fff;border-right:1px solid #EFEFEF;
+    width:240px;background:#fff;border-right:0.5px solid var(--border);
     padding:0;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;
     display:flex;flex-direction:column;min-width:180px;max-width:420px;
     font-family:'Inter',sans-serif;
@@ -39,86 +39,84 @@
     position:absolute;top:0;right:-4px;bottom:0;width:8px;
     cursor:col-resize;z-index:10;background:transparent;
   }
-  .sidebar-resize-handle:hover,.sidebar-resize-handle.dragging{background:rgba(67,56,202,0.12);}
-  .sidebar-inner{flex:1;padding:8px 0 40px;}
+  .sidebar-resize-handle:hover,.sidebar-resize-handle.dragging{background:var(--bg-accent);opacity:0.4;}
+  .sidebar-inner{flex:1;padding:4px 0 20px;overflow-y:auto;}
   .brand-block{
-    padding:16px 16px 12px;border-bottom:1px solid #F4F4F4;margin-bottom:4px;
-    display:flex;align-items:center;gap:10px;
+    padding:13px 14px 11px;border-bottom:0.5px solid var(--border);
+    display:flex;align-items:center;gap:9px;flex-shrink:0;
   }
   .brand-icon{
-    width:30px;height:30px;background:linear-gradient(135deg,#4338CA,#6366F1);
-    border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    width:28px;height:28px;background:linear-gradient(135deg,#4338CA,#818CF8);
+    border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
   }
-  .brand-text{}
-  .brand{font-family:'Manrope',sans-serif;font-weight:800;font-size:14px;letter-spacing:-0.01em;color:#1a1a2e;line-height:1.1;}
-  .brand-sub{font-size:10px;color:#AAA;margin-top:2px;letter-spacing:0.02em;}
+  .brand-icon i{color:#fff;font-size:14px;}
+  .brand{font-family:'Manrope',sans-serif;font-weight:700;font-size:13.5px;letter-spacing:-0.01em;color:var(--text-primary);line-height:1.2;}
+  .brand-sub{font-size:10px;color:var(--text-muted);margin-top:1px;}
   .nav-group-label{
-    font-size:9.5px;font-weight:700;color:#C0C0C0;text-transform:uppercase;
-    letter-spacing:0.1em;padding:16px 16px 5px;
+    font-size:9.5px;font-weight:600;color:var(--text-muted);text-transform:uppercase;
+    letter-spacing:0.09em;padding:14px 14px 4px;
     display:flex;align-items:center;justify-content:space-between;
   }
-  .nav-group-label>span:first-child{flex:1;}
   .nav-item{
     display:flex;align-items:center;
     padding:0;cursor:pointer;position:relative;
-    border-left:2px solid transparent;
-    transition:background 0.08s;
+    border-left:2px solid transparent;transition:background 0.08s;
   }
   .nav-item-inner{
     display:flex;align-items:center;gap:9px;
-    padding:8px 12px 8px 14px;flex:1;min-width:0;
+    padding:8px 12px 8px 12px;flex:1;min-width:0;
   }
-  .nav-item:hover{background:#F6F7FB;}
-  .nav-item.active{background:#F0F1FF;border-left-color:#4338CA;}
-  .nav-dot{
-    width:5px;height:5px;border-radius:50%;
-    background:#D8D8D8;flex-shrink:0;transition:background 0.1s;
+  .nav-item-icon{
+    font-size:15px;color:var(--text-muted);flex-shrink:0;
+    width:18px;text-align:center;display:flex;align-items:center;justify-content:center;
+    transition:color 0.08s;
   }
-  .nav-item.active .nav-dot{background:#4338CA;}
+  .nav-item:hover{background:var(--surface-1);}
+  .nav-item.active{background:var(--bg-accent);border-left-color:var(--fill-accent);}
+  .nav-item.active .nav-item-icon{color:var(--text-accent);}
   .nav-label-text{
     flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    font-size:13px;font-weight:500;color:#555;transition:color 0.08s;
+    font-size:13px;font-weight:400;color:var(--text-secondary);transition:color 0.08s;
   }
-  .nav-item.active .nav-label-text{color:#4338CA;font-weight:600;}
-  .nav-item:hover:not(.active) .nav-label-text{color:#111;}
-  .nav-pct{
-    font-size:10px;font-weight:500;color:#CCCCCC;
-    flex-shrink:0;white-space:nowrap;margin-right:2px;
-  }
-  .nav-item.active .nav-pct{color:#9690E0;}
-  .nav-item-actions{
-    display:flex;align-items:center;gap:1px;padding-right:6px;flex-shrink:0;
-    opacity:0;transition:opacity 0.1s;
-  }
-  .nav-item:hover .nav-item-actions{opacity:1;}
-  .nav-drag-handle{
-    color:#C8C8C8;display:inline-flex;align-items:center;cursor:grab;
-    padding:4px 2px;flex-shrink:0;opacity:0;transition:opacity 0.1s;
-  }
-  .nav-item:hover .nav-drag-handle{opacity:1;}
-  .nav-dup-btn{
-    background:none;border:none;color:#C8C8C8;cursor:pointer;
-    width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;
-    border-radius:5px;transition:background 0.1s,color 0.1s;flex-shrink:0;
-  }
-  .nav-dup-btn:hover{color:#4338CA;background:#EAEBFF;}
-  .nav-group-dup{
-    background:none;border:none;color:#CCCCCC;cursor:pointer;
-    width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;
-    border-radius:4px;transition:background 0.1s,color 0.1s;
-  }
-  .nav-group-dup:hover{color:#4338CA;background:#EAEBFF;}
-  .mm-group-more{background:none;border:none;color:#CCC;padding:6px;display:flex;}
+  .nav-item.active .nav-label-text{color:var(--text-accent);font-weight:500;}
+  .nav-item:hover:not(.active) .nav-label-text{color:var(--text-primary);}
+  .nav-pct{font-size:10px;color:var(--text-muted);flex-shrink:0;padding-right:2px;}
+  .nav-item.active .nav-pct{color:var(--text-accent);opacity:0.7;}
   .nav-add-btn{
-    margin:10px 14px 0;padding:8px 12px;border-radius:7px;font-size:12px;
-    font-weight:600;color:#5B56D4;background:#F0F1FF;cursor:pointer;text-align:center;
-    border:1.5px dashed #C7C9F0;transition:background 0.1s;letter-spacing:0.01em;
+    margin:10px 12px 0;padding:8px 12px;border-radius:7px;font-size:12px;
+    font-weight:500;color:var(--text-accent);background:var(--bg-accent);cursor:pointer;
+    text-align:center;border:1px dashed var(--border-accent);transition:background 0.1s;
+    display:flex;align-items:center;justify-content:center;gap:6px;
   }
-  .nav-add-btn:hover{background:#E4E5FF;}
-
-  @media (hover:none) and (pointer:coarse){
-    .nav-drag-handle,.nav-dup-btn,.nav-item-actions{opacity:1!important;}
+  .nav-add-btn:hover{opacity:0.85;}
+  .nav-footer{
+    padding:10px 14px;border-top:0.5px solid var(--border);
+    display:flex;align-items:center;gap:9px;flex-shrink:0;
   }
+  .nav-footer-avatar{
+    width:26px;height:26px;border-radius:50%;background:var(--bg-accent);
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:600;color:var(--text-accent);flex-shrink:0;
+  }
+  .nav-footer-email{font-size:11px;color:var(--text-muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .nav-footer-out{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;display:flex;border-radius:5px;}
+  .nav-footer-out:hover{color:var(--text-danger);background:var(--bg-danger);}
+  .nav-ctx-menu{
+    position:fixed;z-index:1000;background:var(--surface-2);
+    border:0.5px solid var(--border-strong);border-radius:8px;
+    padding:4px 0;min-width:160px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.12);
+  }
+  .nav-ctx-item{
+    display:flex;align-items:center;gap:8px;padding:7px 12px;
+    font-size:12.5px;color:var(--text-secondary);cursor:pointer;
+  }
+  .nav-ctx-item i{font-size:14px;color:var(--text-muted);}
+  .nav-ctx-item:hover{background:var(--surface-1);color:var(--text-primary);}
+  .nav-ctx-item.danger{color:var(--text-danger);}
+  .nav-ctx-item.danger i{color:var(--text-danger);}
+  .nav-ctx-sep{height:0.5px;background:var(--border);margin:3px 0;}
+  @media (hover:none) and (pointer:coarse){.nav-add-btn{opacity:1;}}
 
   .swipe-wrap{position:relative;overflow:hidden;display:block;}
   .swipe-content{position:relative;background:#fff;transition:transform 0.18s ease;touch-action:pan-y;z-index:2;display:block;}
@@ -455,16 +453,19 @@
 <div class="sidebar" id="main-sidebar">
   <div class="sidebar-resize-handle" id="sidebar-resize-handle"></div>
   <div class="brand-block">
-    <div class="brand-icon">
-      <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M4 10h12M4 6h8M4 14h10"/></svg>
-    </div>
-    <div class="brand-text">
+    <div class="brand-icon"><i class="ti ti-layout-list" aria-hidden="true"></i></div>
+    <div>
       <div class="brand">Verde Lab</div>
       <div class="brand-sub">Project tracker</div>
     </div>
   </div>
   <div class="sidebar-inner">
     <div id="nav"></div>
+  </div>
+  <div class="nav-footer" id="nav-footer">
+    <div class="nav-footer-avatar" id="nav-footer-avatar">DB</div>
+    <span class="nav-footer-email" id="nav-footer-email">Not signed in</span>
+    <button class="nav-footer-out" id="nav-footer-out-btn" title="Sign out"><i class="ti ti-logout" aria-hidden="true"></i></button>
   </div>
 </div>
 
@@ -1150,12 +1151,50 @@ function renderMobileManage(){
   });
 }
 
+const TOPIC_ICONS = {
+  'ip':'ti-certificate','legal':'ti-building','reg-spain':'ti-gavel',
+  'reg-eu':'ti-world','reg-de':'ti-world','formula':'ti-flask',
+  'rnd':'ti-test-pipe','supply':'ti-truck','packaging':'ti-box',
+  'customs':'ti-plane-departure','brand':'ti-palette','marketing':'ti-speakerphone',
+  'sales':'ti-shopping-cart','pricing':'ti-currency-euro','finance':'ti-report-money',
+  'banking':'ti-building-bank','ecom':'ti-device-laptop','privacy':'ti-lock',
+  'support':'ti-headset','risk':'ti-alert-triangle',
+};
+function topicIcon(key){ return TOPIC_ICONS[key] || 'ti-circle-dot'; }
+
+let activeCtxMenu = null;
+function closeCtxMenu(){ if(activeCtxMenu){ activeCtxMenu.remove(); activeCtxMenu = null; } }
+document.addEventListener('click', closeCtxMenu);
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeCtxMenu(); });
+
+function openCtxMenu(e, items){
+  e.preventDefault(); e.stopPropagation();
+  closeCtxMenu();
+  const menu = document.createElement('div');
+  menu.className = 'nav-ctx-menu';
+  items.forEach(item=>{
+    if(item==='sep'){ const s=document.createElement('div'); s.className='nav-ctx-sep'; menu.appendChild(s); return; }
+    const el = document.createElement('div');
+    el.className = 'nav-ctx-item' + (item.danger?' danger':'');
+    el.innerHTML = `<i class="ti ${item.icon}" aria-hidden="true"></i>${item.label}`;
+    el.addEventListener('click', (ev)=>{ ev.stopPropagation(); closeCtxMenu(); item.onClick(); });
+    menu.appendChild(el);
+  });
+  document.body.appendChild(menu);
+  const vw=window.innerWidth, vh=window.innerHeight, mx=e.clientX, my=e.clientY;
+  const mw=menu.offsetWidth, mh=menu.offsetHeight;
+  menu.style.left = (mx+mw>vw ? mx-mw : mx)+'px';
+  menu.style.top  = (my+mh>vh ? my-mh : my)+'px';
+  activeCtxMenu = menu;
+}
+
 function renderNav(activeKey){
   const nav = document.getElementById('nav');
   nav.innerHTML = '';
+
   const overviewItem = document.createElement('div');
-  overviewItem.className = 'nav-item' + (activeKey==='overview'?' active':'');
-  overviewItem.innerHTML = `<div class="nav-item-inner"><span class="nav-dot"></span><span class="nav-label-text">Overview</span></div>`;
+  overviewItem.className = 'nav-item'+(activeKey==='overview'?' active':'');
+  overviewItem.innerHTML = `<div class="nav-item-inner"><i class="ti ti-layout-dashboard nav-item-icon" aria-hidden="true"></i><span class="nav-label-text">Overview</span></div>`;
   overviewItem.addEventListener('click', ()=>switchView('overview'));
   nav.appendChild(overviewItem);
 
@@ -1167,28 +1206,20 @@ function renderNav(activeKey){
     glWrap.className = 'swipe-wrap';
     const gl = document.createElement('div');
     gl.className = 'nav-group-label swipe-content';
-    const glText = document.createElement('span');
-    glText.textContent = group;
-    const glDup = document.createElement('button');
-    glDup.className = 'nav-group-dup';
-    glDup.title = 'Duplicate this theme (with all its master tasks)';
-    glDup.innerHTML = icon('copy');
-    glDup.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      if(!confirm('Duplicate the theme "'+group+'" along with all its master tasks and their sub-tasks?')) return;
-      duplicateTheme(group);
+    gl.innerHTML = `<span>${group}</span>`;
+    gl.addEventListener('contextmenu', (e)=>{
+      openCtxMenu(e,[
+        {icon:'ti-copy',label:'Duplicate theme',onClick:()=>{ if(confirm('Duplicate "'+group+'" with all its master tasks?')) duplicateTheme(group); }},
+        'sep',
+        {icon:'ti-trash',label:'Delete theme',danger:true,onClick:()=>deleteTheme(group)}
+      ]);
     });
-    gl.appendChild(glText);
-    gl.appendChild(glDup);
     gl.addEventListener('dragover', (e)=>{ e.preventDefault(); if(draggedTopicKey) gl.classList.add('drag-over-label'); });
     gl.addEventListener('dragleave', ()=>gl.classList.remove('drag-over-label'));
     gl.addEventListener('drop', (e)=>{
-      e.preventDefault();
-      gl.classList.remove('drag-over-label');
+      e.preventDefault(); gl.classList.remove('drag-over-label');
       if(!draggedTopicKey) return;
-      reorderTopics(draggedTopicKey, null, group);
-      draggedTopicKey = null;
-      renderNav(activeKey);
+      reorderTopics(draggedTopicKey, null, group); draggedTopicKey=null; renderNav(activeKey);
     });
     glWrap.appendChild(gl);
     attachSwipeToDelete(glWrap, gl, ()=>deleteTheme(group));
@@ -1196,52 +1227,47 @@ function renderNav(activeKey){
 
     TOPICS.filter(t=>t.group===group).forEach(topic=>{
       const stats = topicStats(topic.key);
+      const iCls = topicIcon(topic.key);
       const itemWrap = document.createElement('div');
       itemWrap.className = 'swipe-wrap';
       const item = document.createElement('div');
-      item.className = 'nav-item swipe-content' + (activeKey===topic.key?' active':'');
-      item.setAttribute('draggable', 'true');
-      item.innerHTML = `<span class="nav-drag-handle">${icon('dots')}</span><div class="nav-item-inner"><span class="nav-dot"></span><span class="nav-label-text">${topic.label}</span><span class="nav-pct">${stats.pct}%</span></div>`;
-      const navDup = document.createElement('button');
-      navDup.className = 'nav-dup-btn';
-      navDup.title = 'Duplicate this master task';
-      navDup.innerHTML = icon('copy');
-      navDup.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        duplicateMasterTask(topic.key);
-      });
-      item.appendChild(navDup);
+      item.className = 'nav-item swipe-content'+(activeKey===topic.key?' active':'');
+      item.setAttribute('draggable','true');
+      item.innerHTML = `<div class="nav-item-inner"><i class="ti ${iCls} nav-item-icon" aria-hidden="true"></i><span class="nav-label-text">${topic.label}</span><span class="nav-pct">${stats.pct}%</span></div>`;
       item.addEventListener('click', (e)=>{
-        if(item.classList.contains('swiped-open')){
-          item.style.transform = '';
-          item.classList.remove('swiped-open');
-          return;
-        }
-        if(e.target.closest('.nav-drag-handle') || e.target.closest('.nav-dup-btn')) return;
+        if(item.classList.contains('swiped-open')){ item.style.transform=''; item.classList.remove('swiped-open'); return; }
         switchView(topic.key);
       });
+      item.addEventListener('contextmenu', (e)=>{
+        openCtxMenu(e,[
+          {icon:'ti-arrow-right',label:'Open',onClick:()=>switchView(topic.key)},
+          {icon:'ti-copy',label:'Duplicate',onClick:()=>duplicateMasterTask(topic.key)},
+          'sep',
+          {icon:'ti-arrow-up',label:'Move up',onClick:()=>{ moveTopicInGroup(topic.key,-1); renderNav(activeKey); }},
+          {icon:'ti-arrow-down',label:'Move down',onClick:()=>{ moveTopicInGroup(topic.key,1); renderNav(activeKey); }},
+          'sep',
+          {icon:'ti-trash',label:'Delete',danger:true,onClick:()=>deleteMasterTaskByKey(topic.key)}
+        ]);
+      });
       item.addEventListener('dragstart', (e)=>{
-        draggedTopicKey = topic.key;
-        try{ e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain', topic.key); }catch(err){}
+        draggedTopicKey=topic.key;
+        try{ e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',topic.key); }catch(err){}
         item.classList.add('dragging');
       });
       item.addEventListener('dragend', ()=>{
         item.classList.remove('dragging');
-        document.querySelectorAll('.nav-item.drag-over, .nav-group-label.drag-over-label').forEach(el=>el.classList.remove('drag-over','drag-over-label'));
-        draggedTopicKey = null;
+        document.querySelectorAll('.nav-item.drag-over,.nav-group-label.drag-over-label').forEach(el=>el.classList.remove('drag-over','drag-over-label'));
+        draggedTopicKey=null;
       });
       item.addEventListener('dragover', (e)=>{
         e.preventDefault();
-        if(draggedTopicKey && draggedTopicKey !== topic.key) item.classList.add('drag-over');
+        if(draggedTopicKey && draggedTopicKey!==topic.key) item.classList.add('drag-over');
       });
       item.addEventListener('dragleave', ()=>item.classList.remove('drag-over'));
       item.addEventListener('drop', (e)=>{
-        e.preventDefault();
-        item.classList.remove('drag-over');
-        if(!draggedTopicKey || draggedTopicKey === topic.key) return;
-        reorderTopics(draggedTopicKey, topic.key, topic.group);
-        draggedTopicKey = null;
-        renderNav(activeKey);
+        e.preventDefault(); item.classList.remove('drag-over');
+        if(!draggedTopicKey||draggedTopicKey===topic.key) return;
+        reorderTopics(draggedTopicKey,topic.key,topic.group); draggedTopicKey=null; renderNav(activeKey);
       });
       itemWrap.appendChild(item);
       attachSwipeToDelete(itemWrap, item, ()=>deleteMasterTaskByKey(topic.key));
@@ -1251,7 +1277,7 @@ function renderNav(activeKey){
 
   const addBtn = document.createElement('div');
   addBtn.className = 'nav-add-btn';
-  addBtn.textContent = '+ Add master task';
+  addBtn.innerHTML = '<i class="ti ti-plus" aria-hidden="true" style="font-size:12px;"></i> Add master task';
   addBtn.addEventListener('click', openAddMasterTaskModal);
   nav.appendChild(addBtn);
 
@@ -2166,6 +2192,7 @@ if(!firebaseReady){
     if(user){
       currentUser = user;
       loginOverlay.classList.remove('show');
+      updateNavFooter(user);
       if(!appStarted){
         appStarted = true;
         await initApp();
@@ -2224,6 +2251,33 @@ document.getElementById('mobile-manage-add').addEventListener('click', ()=>{
 
 document.getElementById('undo-btn').addEventListener('click', performUndo);
 document.getElementById('redo-btn').addEventListener('click', performRedo);
+function updateNavFooter(user){
+  const emailEl = document.getElementById('nav-footer-email');
+  const avatarEl = document.getElementById('nav-footer-avatar');
+  if(user && emailEl && avatarEl){
+    const email = user.email || '';
+    emailEl.textContent = email;
+    avatarEl.textContent = email.slice(0,2).toUpperCase();
+  }
+}
+
+const navFooterOutBtn = document.getElementById('nav-footer-out-btn');
+if(navFooterOutBtn){
+  navFooterOutBtn.addEventListener('click', async ()=>{
+    if(!firebaseReady || !currentUser){
+      alert('Cloud sync is not active — nothing to sign out of.');
+      return;
+    }
+    if(!confirm('Sign out? Your data stays safely in the cloud.')) return;
+    if(cloudSaveTimer){
+      clearTimeout(cloudSaveTimer);
+      try{ await fbDb.collection('trackers').doc(currentUser.uid).set({payload: pendingPayload, updatedAt: Date.now()}); }catch(e){}
+    }
+    await fbAuth.signOut();
+    location.reload();
+  });
+}
+
 document.getElementById('signout-btn').addEventListener('click', async ()=>{
   if(!firebaseReady || !currentUser){
     alert('Cloud sync is not active here, so there is nothing to sign out of. Open the live site to sign in.');
