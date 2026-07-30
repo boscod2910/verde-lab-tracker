@@ -280,6 +280,61 @@
   .flag-row .dot.blocked{background:var(--amber);}
   .flag-row .topic-tag{margin-left:auto;font-size:11px;color:var(--ink-faint);background:var(--gray-bg);padding:2px 8px;border-radius:8px;white-space:nowrap;}
 
+  :root{
+    --group-foundations: var(--accent);
+    --group-product: var(--amber);
+    --group-gtm: #0E7C86;
+    --group-operations: var(--green);
+  }
+  .ops-search-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+  #ops-search-input{
+    width:100%;border:1px solid var(--line);border-radius:10px;
+    padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;
+    background:var(--card);color:var(--ink);box-sizing:border-box;
+  }
+  #ops-search-input:focus{outline:none;border-color:var(--accent);}
+  .ops-sort-controls{display:flex;gap:6px;}
+  .ops-sort-controls button{
+    background:none;border:1px solid var(--line);color:var(--ink-dim);
+    font-family:'Inter',sans-serif;font-size:11px;text-transform:uppercase;
+    letter-spacing:0.03em;padding:5px 10px;border-radius:8px;cursor:pointer;
+  }
+  .ops-sort-controls button.active{border-color:var(--accent);color:var(--accent-dark);background:var(--accent-light);}
+  #ops-search-results .task-card{cursor:pointer;}
+  #ops-search-results .task-card:hover{border-color:var(--accent);}
+  .search-empty{font-size:13px;color:var(--ink-faint);padding:14px 0;}
+
+  .ops-cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .ops-cal-range{font-size:11.5px;color:var(--ink-faint);font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:0.04em;}
+  .ops-cal-nav button{
+    background:var(--card);border:1px solid var(--line);color:var(--ink);
+    font-family:'Inter',sans-serif;font-size:12.5px;padding:6px 13px;border-radius:8px;cursor:pointer;
+  }
+  .ops-cal-nav button:hover{border-color:var(--accent);}
+  .ops-cal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px;}
+  .ops-month{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .ops-month-title{font-family:'Manrope',sans-serif;font-weight:700;font-size:14.5px;margin-bottom:10px;}
+  .ops-weekday-row{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px;}
+  .ops-weekday-row div{font-size:10px;color:var(--ink-faint);text-align:center;}
+  .ops-day-grid{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:minmax(52px,auto);gap:3px;}
+  .ops-day-cell{background:var(--gray-bg);border:1px solid transparent;border-radius:6px;padding:4px 5px;font-size:11px;color:var(--ink-dim);min-height:52px;overflow:hidden;}
+  .ops-day-cell.other-month{opacity:0.35;}
+  .ops-day-cell.today{border-color:var(--accent);}
+  .ops-day-num{font-weight:600;margin-bottom:2px;font-size:11px;}
+  .ops-day-chip{
+    display:flex;align-items:center;gap:4px;font-size:10px;color:var(--ink);
+    line-height:1.3;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    cursor:pointer;border-radius:4px;padding:1px 3px;
+  }
+  .ops-day-chip:hover{background:#fff;}
+  .ops-day-dot{width:6px;height:6px;border-radius:50%;flex:0 0 auto;}
+  .ops-day-more{font-size:9.5px;color:var(--ink-faint);}
+  .task-flash{animation:opsFlash 1.4s ease;}
+  @keyframes opsFlash{
+    0%{box-shadow:0 0 0 2px var(--accent);}
+    100%{box-shadow:0 0 0 0 transparent;}
+  }
+
   .task-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;}
   .task-check{width:18px;height:18px;border-radius:6px;border:1.5px solid #C7C9D1;background:#fff;cursor:pointer;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;padding:0;}
   .task-check.done{background:var(--green);border-color:var(--green);}
@@ -386,6 +441,7 @@
     .kpi-row{grid-template-columns:repeat(2,1fr);gap:10px;}
     .kpi-value{font-size:21px;}
     .topic-grid{grid-template-columns:1fr;}
+    .ops-cal-grid{grid-template-columns:1fr;}
     .flag-row{flex-wrap:wrap;}
     .flag-row .topic-tag{margin-left:0;}
     .task-card{padding:12px;gap:8px;}
@@ -490,6 +546,26 @@
       <div><h1>Overview</h1><div class="sub">Nexo Austral Europa — all workstreams at a glance</div></div>
     </div>
     <div class="kpi-row" id="kpi-row"></div>
+
+    <div class="section-label">Search tasks</div>
+    <div class="ops-search-wrap">
+      <input type="text" id="ops-search-input" placeholder="Search tasks — keyword, supplier, theme…">
+      <div class="ops-sort-controls" id="ops-sort-controls" hidden>
+        <button data-sort="date" class="active" type="button">By date</button>
+        <button data-sort="newest" type="button">Newest first</button>
+        <button data-sort="relevance" type="button">Most relevant</button>
+      </div>
+    </div>
+    <div id="ops-search-results"></div>
+
+    <div class="section-label" id="ops-cal-label">Calendar</div>
+    <div class="ops-cal-nav">
+      <button id="ops-cal-prev" type="button">‹ Prev</button>
+      <span class="ops-cal-range" id="ops-cal-range"></span>
+      <button id="ops-cal-next" type="button">Next ›</button>
+    </div>
+    <div class="ops-cal-grid" id="ops-cal-grid"></div>
+
     <div class="section-label">Needs attention</div>
     <div id="flag-list"></div>
     <div class="section-label">Workstreams</div>
@@ -552,6 +628,7 @@ function icon(name){
     trash:    `<svg ${s} width="13" height="13"><path d="M3 5h14M8 5V3h4v2M6 5l.5 9.5a1 1 0 0 0 1 .95h5a1 1 0 0 0 1-.95L14 5"/></svg>`,
     move:     `<svg ${s} width="14" height="14"><path d="M5 12H15M15 12l-3-3M15 12l-3 3"/><path d="M3 4h8M7 7H3v10h4"/></svg>`,
     copy:     `<svg ${s} width="13" height="13"><rect x="8" y="1" width="10" height="12" rx="2"/><rect x="1" y="6" width="10" height="12" rx="2"/></svg>`,
+    file:     `<svg ${s} width="14" height="14"><path d="M6 2h5l4 4v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v4h4"/></svg>`,
     kebab:    `<svg viewBox="0 0 4 16" width="4" height="16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/></svg>`
   };
   return icons[name] || '';
@@ -1550,6 +1627,170 @@ function renderOverview(){
     card.addEventListener('click', ()=>switchView(topic.key));
     topicGrid.appendChild(card);
   });
+
+  renderCalendarOverview();
+  runOpsSearch();
+}
+
+/* ---------- Calendar (overview) ---------- */
+const OPS_GROUP_COLORS = {
+  'Foundations': 'var(--group-foundations)',
+  'Product': 'var(--group-product)',
+  'Go-to-market': 'var(--group-gtm)',
+  'Operations': 'var(--group-operations)'
+};
+function opsGroupColor(topicKey){
+  const topic = TOPICS.find(t=>t.key===topicKey);
+  if(!topic) return 'var(--ink-faint)';
+  return OPS_GROUP_COLORS[topic.group] || 'var(--ink-faint)';
+}
+
+let opsCalMonthOffset = 0;
+
+function opsTodayIso(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+function escapeOpsHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function opsBuildMonth(baseDate){
+  const year = baseDate.getFullYear();
+  const month = baseDate.getMonth();
+  const first = new Date(year, month, 1);
+  const startDow = first.getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+  const today = opsTodayIso();
+
+  const cells = [];
+  for(let i=0;i<startDow;i++){ cells.push({day: daysInPrevMonth - startDow + 1 + i, other:true}); }
+  for(let d=1; d<=daysInMonth; d++){
+    cells.push({day:d, other:false, iso: year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0')});
+  }
+  while(cells.length % 7 !== 0){ cells.push({day: cells.length, other:true}); }
+
+  const monthLabel = first.toLocaleDateString('en-US',{month:'long', year:'numeric'});
+  let html = '<div class="ops-month"><div class="ops-month-title">'+monthLabel+'</div>';
+  html += '<div class="ops-weekday-row">'+['S','M','T','W','T','F','S'].map(d=>'<div>'+d+'</div>').join('')+'</div>';
+  html += '<div class="ops-day-grid">';
+  cells.forEach(c=>{
+    if(c.other){ html += '<div class="ops-day-cell other-month"><div class="ops-day-num">'+c.day+'</div></div>'; return; }
+    const isToday = c.iso === today;
+    const dueTasks = tasks.filter(t=>t.dueDate===c.iso);
+    let chips = dueTasks.slice(0,2).map(t=>{
+      const color = opsGroupColor(t.topic);
+      return '<div class="ops-day-chip" data-goto="'+t.id+'" title="'+escapeOpsHtml(t.text)+'"><span class="ops-day-dot" style="background:'+color+'"></span>'+escapeOpsHtml(t.text)+'</div>';
+    }).join('');
+    let more = dueTasks.length>2 ? '<div class="ops-day-more">+'+(dueTasks.length-2)+' more</div>' : '';
+    html += '<div class="ops-day-cell'+(isToday?' today':'')+'"><div class="ops-day-num">'+c.day+'</div>'+chips+more+'</div>';
+  });
+  html += '</div></div>';
+  return html;
+}
+
+function renderCalendarOverview(){
+  const grid = document.getElementById('ops-cal-grid');
+  if(!grid) return;
+  const now = new Date();
+  const base = new Date(now.getFullYear(), now.getMonth() + opsCalMonthOffset, 1);
+  const next = new Date(now.getFullYear(), now.getMonth() + opsCalMonthOffset + 1, 1);
+  grid.innerHTML = opsBuildMonth(base) + opsBuildMonth(next);
+  const rangeLabel = document.getElementById('ops-cal-range');
+  if(rangeLabel){
+    rangeLabel.textContent =
+      base.toLocaleDateString('en-US',{month:'short',year:'numeric'}) + ' – ' +
+      next.toLocaleDateString('en-US',{month:'short',year:'numeric'});
+  }
+  grid.querySelectorAll('[data-goto]').forEach(el=>{
+    el.addEventListener('click', ()=> goToTask(Number(el.getAttribute('data-goto'))));
+  });
+}
+
+/* ---------- Go to a task and open it for editing ---------- */
+function goToTask(taskId){
+  const task = tasks.find(t=>t.id===taskId);
+  if(!task) return;
+  task._expanded = true;
+  switchView(task.topic);
+  renderTaskList(task.topic);
+  requestAnimationFrame(()=>{
+    const card = document.querySelector('#tasklist-'+task.topic+' .task-card[data-id="'+task.id+'"]');
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.add('task-flash');
+      setTimeout(()=>card.classList.remove('task-flash'), 1400);
+    }
+  });
+}
+
+/* ---------- Search ---------- */
+let opsSearchSortMode = 'date';
+
+function opsRelevance(task, words){
+  const title = task.text.toLowerCase();
+  const comment = (task.comment||'').toLowerCase();
+  const topicLabel = (TOPICS.find(t=>t.key===task.topic)||{label:''}).label.toLowerCase();
+  let score = 0;
+  words.forEach(w=>{
+    if(!w) return;
+    score += (title.split(w).length-1)*3;
+    score += (comment.split(w).length-1)*1;
+    score += (topicLabel.split(w).length-1)*2;
+    if(title.startsWith(w)) score += 2;
+  });
+  return score;
+}
+
+function runOpsSearch(){
+  const input = document.getElementById('ops-search-input');
+  const resultsEl = document.getElementById('ops-search-results');
+  const sortControls = document.getElementById('ops-sort-controls');
+  if(!input || !resultsEl) return;
+  const q = input.value.trim().toLowerCase();
+
+  if(!q){
+    resultsEl.innerHTML = '';
+    if(sortControls) sortControls.hidden = true;
+    return;
+  }
+  if(sortControls) sortControls.hidden = false;
+
+  const words = q.split(/\s+/).filter(Boolean);
+  let matches = tasks.filter(t=>{
+    const topicLabel = (TOPICS.find(x=>x.key===t.topic)||{label:''}).label.toLowerCase();
+    const combined = (t.text+' '+(t.comment||'')+' '+topicLabel).toLowerCase();
+    return words.every(w=>combined.includes(w));
+  });
+
+  if(opsSearchSortMode==='date'){
+    matches.sort((a,b)=> (a.dueDate||'9999-99-99').localeCompare(b.dueDate||'9999-99-99'));
+  } else if(opsSearchSortMode==='newest'){
+    matches.sort((a,b)=> (b.dueDate||'0000-00-00').localeCompare(a.dueDate||'0000-00-00'));
+  } else {
+    matches.sort((a,b)=> opsRelevance(b,words) - opsRelevance(a,words) || (a.dueDate||'9999-99-99').localeCompare(b.dueDate||'9999-99-99'));
+  }
+
+  if(matches.length===0){
+    resultsEl.innerHTML = '<div class="search-empty">No tasks match "'+escapeOpsHtml(q)+'".</div>';
+    return;
+  }
+
+  resultsEl.innerHTML = matches.map(t=>{
+    const topic = TOPICS.find(x=>x.key===t.topic);
+    const color = opsGroupColor(t.topic);
+    const due = t.dueDate ? '<span class="due-badge">'+t.dueDate+'</span>' : '';
+    return '<div class="task-card" data-goto-search="'+t.id+'">'
+      + '<span class="ops-day-dot" style="background:'+color+';margin-top:6px;"></span>'
+      + '<div class="task-body"><div class="task-top"><span class="task-text'+(t.status==='done'?' done':'')+'">'+escapeOpsHtml(t.text)+'</span>'+due+'</div>'
+      + '<div style="font-size:11px;color:var(--ink-faint);margin-top:4px;">'+(topic?topic.label:'')+'</div></div>'
+    + '</div>';
+  }).join('');
+  resultsEl.querySelectorAll('[data-goto-search]').forEach(el=>{
+    el.addEventListener('click', ()=> goToTask(Number(el.getAttribute('data-goto-search'))));
+  });
 }
 
 function fileToResizedDataUrl(file, maxDim, cb){
@@ -1663,6 +1904,7 @@ function duplicateMasterTask(sourceKey){
       priority: t.priority,
       comment: t.comment,
       images: (t.images||[]).slice(),
+      files: (t.files||[]).slice(),
       links: (t.links||[]).slice(),
       dueDate: t.dueDate,
       emailReminder: t.emailReminder
@@ -1693,6 +1935,7 @@ function duplicateTheme(groupName){
         priority: t.priority,
         comment: t.comment,
         images: (t.images||[]).slice(),
+        files: (t.files||[]).slice(),
         links: (t.links||[]).slice(),
         dueDate: t.dueDate,
         emailReminder: t.emailReminder
@@ -1809,7 +2052,7 @@ function renderTaskList(topicKey){
   btn.addEventListener('click', ()=>{
     const text = input.value.trim();
     if(!text) return;
-    tasks.push({id:nextTaskId++, topic:topicKey, text, status:'not_started', priority:sel.value, comment:'', images:[], links:[], dueDate:null, emailReminder:false});
+    tasks.push({id:nextTaskId++, topic:topicKey, text, status:'not_started', priority:sel.value, comment:'', images:[], files:[], links:[], dueDate:null, emailReminder:false});
     saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
   });
   input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') btn.click(); });
@@ -1904,18 +2147,37 @@ function buildTaskCard(task, topicKey, draggableEnabled){
 
     const imgBtn = document.createElement('button');
     imgBtn.className = 'icon-btn';
-    imgBtn.title = 'Attach image';
+    imgBtn.title = 'Attach image or file (PDF, Word, PowerPoint, Excel)';
     imgBtn.innerHTML = icon('image');
     const fileInput = document.createElement('input');
-    fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.style.display = 'none';
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    fileInput.style.display = 'none';
+    const MAX_DOC_BYTES = 300 * 1024; // 300KB raw - keeps the synced Firestore document (1MB total, shared across ALL tasks) from filling up fast
     fileInput.addEventListener('change', (e)=>{
       const file = e.target.files[0];
       if(!file) return;
-      fileToResizedDataUrl(file, 480, (dataUrl)=>{
-        if(!task.images) task.images = [];
-        task.images.push(dataUrl);
-        saveStorage(); renderTaskList(topicKey);
-      });
+      if(file.type.startsWith('image/')){
+        fileToResizedDataUrl(file, 480, (dataUrl)=>{
+          if(!task.images) task.images = [];
+          task.images.push(dataUrl);
+          saveStorage(); renderTaskList(topicKey);
+        });
+      } else {
+        if(file.size > MAX_DOC_BYTES){
+          alert('That file is '+Math.round(file.size/1024)+'KB. To keep everyone\'s sync fast, files attached here are capped at 300KB. For anything bigger, use the link button and paste a Google Drive link instead.');
+          fileInput.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev)=>{
+          if(!task.files) task.files = [];
+          task.files.push({name: file.name, type: file.type, size: file.size, dataUrl: ev.target.result});
+          saveStorage(); renderTaskList(topicKey);
+        };
+        reader.readAsDataURL(file);
+      }
+      fileInput.value = '';
     });
     imgBtn.addEventListener('click', ()=>fileInput.click());
 
@@ -1962,7 +2224,7 @@ function buildTaskCard(task, topicKey, draggableEnabled){
     del.textContent = 'Delete task';
     del.title = 'Delete this entire task';
     del.addEventListener('click', ()=>{
-      if(confirm('Delete this task? This removes it and any attached images/links.')){
+      if(confirm('Delete this task? This removes it and any attached images/files/links.')){
         snapshotBeforeChange('before deleting: '+task.text);
         tasks = tasks.filter(t=>t.id!==task.id);
         saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
@@ -2023,6 +2285,7 @@ function buildTaskCard(task, topicKey, draggableEnabled){
           priority: task.priority,
           comment: task.comment,
           images: (task.images||[]).slice(),
+          files: (task.files||[]).slice(),
           links: (task.links||[]).slice(),
           dueDate: task.dueDate,
           emailReminder: task.emailReminder
@@ -2086,7 +2349,7 @@ function buildTaskCard(task, topicKey, draggableEnabled){
       body.appendChild(c);
     }
 
-    if((task.images && task.images.length) || (task.links && task.links.length)){
+    if((task.images && task.images.length) || (task.files && task.files.length) || (task.links && task.links.length)){
       const attachRow = document.createElement('div');
       attachRow.className = 'attach-row';
       (task.images||[]).forEach((src, idx)=>{
@@ -2106,6 +2369,29 @@ function buildTaskCard(task, topicKey, draggableEnabled){
           saveStorage(); renderTaskList(topicKey);
         });
         wrap.appendChild(thumb);
+        wrap.appendChild(x);
+        attachRow.appendChild(wrap);
+      });
+      (task.files||[]).forEach((f, idx)=>{
+        const wrap = document.createElement('div');
+        wrap.className = 'drive-chip-wrap';
+        const chip = document.createElement('a');
+        chip.className = 'drive-chip';
+        chip.href = f.dataUrl;
+        chip.download = f.name;
+        chip.title = f.name + ' (' + Math.round((f.size||0)/1024) + 'KB) — click to download';
+        const shortName = f.name.length > 22 ? f.name.slice(0,19)+'…' : f.name;
+        chip.innerHTML = `${icon('file')} ${shortName}`;
+        const x = document.createElement('button');
+        x.className = 'chip-x';
+        x.innerHTML = '&times;';
+        x.title = 'Remove file';
+        x.addEventListener('click', (e)=>{
+          e.preventDefault(); e.stopPropagation();
+          task.files.splice(idx,1);
+          saveStorage(); renderTaskList(topicKey);
+        });
+        wrap.appendChild(chip);
         wrap.appendChild(x);
         attachRow.appendChild(wrap);
       });
@@ -2440,6 +2726,28 @@ document.getElementById('mobile-manage-add').addEventListener('click', ()=>{
     document.body.style.userSelect = '';
     try{ localStorage.setItem('virt-sidebar-width', sidebar.getBoundingClientRect().width); }catch(e){}
   });
+})();
+
+(function(){
+  const prevBtn = document.getElementById('ops-cal-prev');
+  const nextBtn = document.getElementById('ops-cal-next');
+  if(prevBtn) prevBtn.addEventListener('click', ()=>{ opsCalMonthOffset -= 1; renderCalendarOverview(); });
+  if(nextBtn) nextBtn.addEventListener('click', ()=>{ opsCalMonthOffset += 1; renderCalendarOverview(); });
+
+  const searchInput = document.getElementById('ops-search-input');
+  if(searchInput) searchInput.addEventListener('input', runOpsSearch);
+
+  const sortControls = document.getElementById('ops-sort-controls');
+  if(sortControls){
+    sortControls.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button[data-sort]');
+      if(!btn) return;
+      opsSearchSortMode = btn.getAttribute('data-sort');
+      sortControls.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      runOpsSearch();
+    });
+  }
 })();
 
 document.getElementById('undo-btn').addEventListener('click', performUndo);
