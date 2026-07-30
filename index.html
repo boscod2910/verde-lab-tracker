@@ -347,6 +347,10 @@
   .pill.high{background:var(--red-bg);color:var(--red);}
   .pill.medium{background:var(--amber-bg);color:var(--amber);}
   .pill.low{background:var(--gray-bg);color:var(--ink-dim);}
+  select.priority-select{font-size:10.5px;font-weight:600;border:none;border-radius:8px;padding:2px 8px;font-family:'Inter',sans-serif;cursor:pointer;letter-spacing:0.02em;}
+  .priority-select.high{background:var(--red-bg);color:var(--red);}
+  .priority-select.medium{background:var(--amber-bg);color:var(--amber);}
+  .priority-select.low{background:var(--gray-bg);color:var(--ink-dim);}
   select.status-select{font-size:11px;font-weight:600;border:none;border-radius:8px;padding:3px 8px;font-family:'Inter',sans-serif;cursor:pointer;}
   .status-select.not_started{background:var(--gray-bg);color:var(--ink-dim);}
   .status-select.in_progress{background:var(--amber-bg);color:var(--amber);}
@@ -451,6 +455,7 @@
     .task-del{padding:8px 14px;font-size:12.5px;}
     .status-select{padding:6px 10px;font-size:12px;}
     .pill{padding:4px 10px;font-size:11px;}
+    .priority-select{padding:4px 10px;font-size:11px;}
     .task-check{width:24px;height:24px;}
     .due-panel{padding:12px;}
     .due-panel select, .due-panel input[type=date]{padding:8px;font-size:13px;}
@@ -2128,9 +2133,18 @@ function buildTaskCard(task, topicKey, draggableEnabled){
     text.textContent = task.text;
     text.addEventListener('click', ()=>{ task._expanded = !task._expanded; renderTaskList(topicKey); });
 
-    const pill = document.createElement('span');
-    pill.className = 'pill ' + task.priority;
-    pill.textContent = task.priority;
+    const pill = document.createElement('select');
+    pill.className = 'priority-select ' + task.priority;
+    [['low','low'],['medium','medium'],['high','high']].forEach(([v,l])=>{
+      const opt = document.createElement('option');
+      opt.value=v; opt.textContent=l;
+      if(task.priority===v) opt.selected=true;
+      pill.appendChild(opt);
+    });
+    pill.addEventListener('change', (e)=>{
+      task.priority = e.target.value;
+      saveStorage(); renderOverview(); renderNav(topicKey); renderTaskList(topicKey);
+    });
 
     const statusSel = document.createElement('select');
     statusSel.className = 'status-select ' + task.status;
