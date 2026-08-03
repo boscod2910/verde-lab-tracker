@@ -341,7 +341,9 @@
   .task-check.done::after{content:'\2713';color:#fff;font-size:11px;}
   .task-body{flex:1;min-width:0;}
   .task-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-  .task-text{font-size:14px;cursor:pointer;}
+  .task-text{font-size:14px;cursor:text;border-radius:4px;padding:1px 4px;margin:-1px -4px;outline:none;}
+  .task-text:hover{background:var(--gray-bg);}
+  .task-text:focus{background:#fff;box-shadow:0 0 0 1.5px var(--accent);}
   .task-text.done{color:var(--ink-faint);text-decoration:line-through;}
   .pill{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:8px;letter-spacing:0.02em;}
   .pill.high{background:var(--red-bg);color:var(--red);}
@@ -634,6 +636,7 @@ function icon(name){
     move:     `<svg ${s} width="14" height="14"><path d="M5 12H15M15 12l-3-3M15 12l-3 3"/><path d="M3 4h8M7 7H3v10h4"/></svg>`,
     copy:     `<svg ${s} width="13" height="13"><rect x="8" y="1" width="10" height="12" rx="2"/><rect x="1" y="6" width="10" height="12" rx="2"/></svg>`,
     file:     `<svg ${s} width="14" height="14"><path d="M6 2h5l4 4v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v4h4"/></svg>`,
+    comment:  `<svg ${s} width="14" height="14"><path d="M3 4h14v9H8l-4 3v-3H3z"/></svg>`,
     kebab:    `<svg viewBox="0 0 4 16" width="4" height="16" fill="currentColor"><circle cx="2" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/></svg>`
   };
   return icons[name] || '';
@@ -2131,7 +2134,21 @@ function buildTaskCard(task, topicKey, draggableEnabled){
     const text = document.createElement('span');
     text.className = 'task-text' + (task.status==='done'?' done':'');
     text.textContent = task.text;
-    text.addEventListener('click', ()=>{ task._expanded = !task._expanded; renderTaskList(topicKey); });
+    text.contentEditable = 'true';
+    text.spellcheck = false;
+    text.title = 'Click to edit task name';
+    text.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){ e.preventDefault(); text.blur(); }
+      if(e.key === 'Escape'){ text.textContent = task.text; text.blur(); }
+    });
+    text.addEventListener('blur', ()=>{
+      const newText = text.textContent.replace(/\s+/g,' ').trim();
+      if(newText && newText !== task.text){
+        task.text = newText;
+        saveStorage(); renderOverview(); renderNav(topicKey);
+      }
+      text.textContent = task.text;
+    });
 
     const pill = document.createElement('select');
     pill.className = 'priority-select ' + task.priority;
@@ -2208,6 +2225,12 @@ function buildTaskCard(task, topicKey, draggableEnabled){
       }
     });
 
+    const commentBtn = document.createElement('button');
+    commentBtn.className = 'icon-btn';
+    commentBtn.title = 'Add/view comment';
+    commentBtn.innerHTML = icon('comment');
+    commentBtn.addEventListener('click', ()=>{ task._expanded = !task._expanded; renderTaskList(topicKey); });
+
     const calBtn = document.createElement('button');
     calBtn.className = 'icon-btn';
     calBtn.title = 'Set due date';
@@ -2250,6 +2273,7 @@ function buildTaskCard(task, topicKey, draggableEnabled){
     top.appendChild(pill);
     top.appendChild(statusSel);
     if(dueBadge) top.appendChild(dueBadge);
+    top.appendChild(commentBtn);
     top.appendChild(calBtn);
     top.appendChild(imgBtn);
     top.appendChild(fileInput);
