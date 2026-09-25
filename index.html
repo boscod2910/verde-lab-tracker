@@ -486,6 +486,20 @@
   .history-restore:hover{background:#E1E1FA;}
   .history-empty{font-size:13px;color:var(--ink-faint);padding:12px 0;}
 
+  .daily-minimum{padding:24px;margin-bottom:24px;border:1px solid var(--accent);border-radius:16px;background:var(--accent-light);}
+  .daily-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .daily-head h2{margin:0;font-size:24px;}
+  .daily-head .section-label{margin:0 0 8px;}
+  #daily-progress{font-size:14px;font-weight:600;color:var(--accent-dark);}
+  .daily-intro,.daily-note{font-size:14px;line-height:1.6;}
+  .daily-note{font-size:12px;margin-bottom:0;}
+  .daily-step{display:flex;gap:12px;align-items:flex-start;padding:16px 0;border-top:1px solid var(--accent);}
+  .daily-step input{width:20px;height:20px;flex-shrink:0;accent-color:var(--accent-dark);margin-top:3px;}
+  .daily-step label{display:block;font-weight:600;line-height:1.5;cursor:pointer;overflow-wrap:anywhere;}
+  .daily-step small{display:block;margin:5px 0;line-height:1.5;}
+  .daily-step button{background:transparent;border:0;padding:4px 0;color:var(--accent-dark);text-decoration:underline;cursor:pointer;font:inherit;font-size:13px;}
+  .daily-step.is-done label{text-decoration:line-through;opacity:.65;}
+  .daily-step input:focus-visible,.daily-step button:focus-visible{outline:2px solid var(--accent-dark);outline-offset:4px;}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -552,6 +566,12 @@
     <div class="page-head">
       <div><h1>Overview</h1><div class="sub">Nexo Austral Europa — all workstreams at a glance</div></div>
     </div>
+    <section class="daily-minimum" aria-labelledby="daily-heading">
+      <div class="daily-head"><div><div class="section-label">Verde Lab · daily focus</div><h2 id="daily-heading">Today’s minimum</h2></div><span id="daily-progress" role="status" aria-live="polite"></span></div>
+      <p class="daily-intro">Three small steps are enough. Spend 15 focused minutes on each, then tick off today’s effort.</p>
+      <div id="daily-list"></div>
+      <p class="daily-note">Refreshes each day in your local time. Ticking a step saves today’s progress; the full task stays open.</p>
+    </section>
     <div class="kpi-row" id="kpi-row"></div>
 
     <div class="section-label">Search tasks</div>
@@ -1597,7 +1617,70 @@ function switchView(key){
   renderNav(key);
 }
 
+// Keep daily effort on each task so existing cloud sync, export and undo preserve it.
+function dailyCandidates(allTasks, topics, today){
+  const activeTopics = topics.filter(t=>! /parked|idea bank|later|mate\s*(?:&|and)\s*go/i.test(t.group+' '+t.label));
+  const activeKeys = new Set(activeTopics.map(t=>t.key));
+  const priority = {high:0,medium:1,low:2};
+  return allTasks.filter(t=>activeKeys.has(t.topic) &&
+    !/mate\s*(?:&|and)\s*go/i.test(t.text) &&
+    (t.status!=='done' || t.dailyWorkedOn===today))
+    .slice().sort((a,b)=>{
+      const checked = Number(b.dailyWorkedOn===today)-Number(a.dailyWorkedOn===today);
+      if(checked) return checked;
+      const overdue = Number(Boolean(b.dueDate && b.dueDate<=today))-Number(Boolean(a.dueDate && a.dueDate<=today));
+      return overdue || Number(b.status==='blocked')-Number(a.status==='blocked') ||
+        (priority[a.priority]??1)-(priority[b.priority]??1) ||
+        (a.dueDate||'9999').localeCompare(b.dueDate||'9999') || String(a.id).localeCompare(String(b.id));
+    }).slice(0,3);
+}
+function renderDailyMinimum(){
+  const today = opsTodayIso();
+  const selected = dailyCandidates(tasks, TOPICS, today);
+  const list = document.getElementById('daily-list');
+  list.replaceChildren();
+  const completed = selected.filter(t=>t.dailyWorkedOn===today).length;
+  document.getElementById('daily-progress').textContent = selected.length ?
+    (completed===selected.length ? 'Today’s minimum complete ✓' : completed+' / '+selected.length+' steps done') : 'All clear';
+  if(!selected.length){
+    list.textContent = 'No active Verde Lab tasks to focus on today.';
+    return;
+  }
+  selected.forEach((task,i)=>{
+    const topic = TOPICS.find(t=>t.key===task.topic);
+    const row = document.createElement('div');
+    row.className = 'daily-step'+(task.dailyWorkedOn===today?' is-done':'');
+    const check = document.createElement('input');
+    check.type='checkbox'; check.id='daily-step-'+i; check.checked=task.dailyWorkedOn===today;
+    const body=document.createElement('div');
+    const label=document.createElement('label'); label.htmlFor=check.id;
+    label.textContent=task.status==='blocked' ? 'Identify the next unblocker: '+task.text : 'Move forward: '+task.text;
+    const detail=document.createElement('small');
+    detail.textContent=topic.label+' · 15 min'+(task.dueDate?' · Due '+task.dueDate:'')+
+      (task.status==='blocked'?' · Write down who or what you need next.':' · Take one concrete step and record the outcome in the task.');
+    const open=document.createElement('button'); open.type='button'; open.textContent='Open workstream →';
+    open.addEventListener('click',()=>switchView(task.topic));
+    check.addEventListener('change',()=>{
+      task.dailyWorkedOn=check.checked?opsTodayIso():null;
+      saveStorage(); renderDailyMinimum();
+    });
+    body.append(label,detail,open); row.append(check,body); list.append(row);
+  });
+}
+let dailyRenderedDate = '';
+setInterval(()=>{
+  const today=opsTodayIso();
+  if(today!==dailyRenderedDate && document.getElementById('daily-list')){
+    dailyRenderedDate=today; renderDailyMinimum();
+  }
+},60000);
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden) renderDailyMinimum();
+});
+
 function renderOverview(){
+  dailyRenderedDate=opsTodayIso();
+  renderDailyMinimum();
   const allDone = tasks.filter(t=>t.status==='done').length;
   const allTotal = tasks.length;
   const blocked = tasks.filter(t=>t.status==='blocked').length;
